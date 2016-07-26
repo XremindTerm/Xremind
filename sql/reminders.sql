@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-07-26 08:56:39
+-- Generation Time: 2016-07-26 09:30:21
 -- 服务器版本： 5.7.11
 -- PHP Version: 5.6.19
 
@@ -27,12 +27,12 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `reminders` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT '提醒项目索引',
-  `uId` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '该提醒项目拥有者编号',
-  `status` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT 'wait' COMMENT '提醒项目状态，默认wait',
-  `target` bigint(20) UNSIGNED ZEROFILL NOT NULL DEFAULT '00000000000000000000' COMMENT '下次提醒的时间戳',
-  `interval` int(10) UNSIGNED NOT NULL DEFAULT '60000' COMMENT '下次提醒的时间间隔(ms)',
-  `data` text CHARACTER SET utf8 NOT NULL COMMENT '提醒项目参数配置'
+  `id` int(11) NOT NULL COMMENT '提醒项目编号',
+  `uid` int(11) NOT NULL COMMENT '拥有者编号',
+  `data` text NOT NULL COMMENT '项目参数',
+  `target` varchar(15) NOT NULL DEFAULT '1469525261916' COMMENT '下次提醒的时间戳',
+  `interval` varchar(15) NOT NULL DEFAULT '60000' COMMENT '下次提醒的间隔',
+  `status` varchar(10) NOT NULL DEFAULT 'wait' COMMENT '项目状态'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='提醒项目表';
 
 --
@@ -43,8 +43,7 @@ CREATE TABLE `reminders` (
 -- Indexes for table `reminders`
 --
 ALTER TABLE `reminders`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id_UNIQUE` (`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- 在导出的表使用AUTO_INCREMENT
@@ -54,7 +53,7 @@ ALTER TABLE `reminders`
 -- 使用表AUTO_INCREMENT `reminders`
 --
 ALTER TABLE `reminders`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '提醒项目索引';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '提醒项目编号';
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
