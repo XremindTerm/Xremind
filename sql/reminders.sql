@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-07-26 08:47:35
+-- Generation Time: 2016-07-26 08:56:39
 -- 服务器版本： 5.7.11
 -- PHP Version: 5.6.19
 
@@ -29,11 +29,11 @@ SET time_zone = "+00:00";
 CREATE TABLE `reminders` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '提醒项目索引',
   `uId` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '该提醒项目拥有者编号',
-  `status` varchar(15) NOT NULL DEFAULT 'wait' COMMENT '提醒项目状态，默认wait',
+  `status` varchar(15) CHARACTER SET latin1 NOT NULL DEFAULT 'wait' COMMENT '提醒项目状态，默认wait',
   `target` bigint(20) UNSIGNED ZEROFILL NOT NULL DEFAULT '00000000000000000000' COMMENT '下次提醒的时间戳',
   `interval` int(10) UNSIGNED NOT NULL DEFAULT '60000' COMMENT '下次提醒的时间间隔(ms)',
-  `data` text NOT NULL COMMENT '提醒项目参数配置'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='提醒项目表';
+  `data` text CHARACTER SET latin1 NOT NULL COMMENT '提醒项目参数配置'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='提醒项目表';
 
 --
 -- Indexes for dumped tables
