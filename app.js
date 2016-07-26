@@ -29,8 +29,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({
-  secret:'xid',
-  cookie:{maxAge:600000}//设置session十分钟后过期
+  secret:'Xremind',
+  name:'xid',
+  cookie:{maxAge:600000},//设置session十分钟后过期
   resave:false,
   saveUninitialized:true
 }));
