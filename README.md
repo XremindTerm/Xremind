@@ -6,6 +6,7 @@
 字段名	|类型	|注释
 :------:|:-----:|--------------------------------
 id		|key	|索引
+uid		|int(fkey) |用户编号
 data	|text	|存放提醒项目的参数(JSON格式)
 target	|bigint	|下次提醒时间戳
 interval|int 	|下次提醒间隔
