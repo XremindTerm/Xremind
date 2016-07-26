@@ -27,9 +27,10 @@ nunjucks.configure('views', {
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser("An"));
+app.use(cookieParser());
 app.use(session({
-  secret:'an',
+  secret:'xid',
+  cookie:{maxAge:600000}//设置session十分钟后过期
   resave:false,
   saveUninitialized:true
 }));
