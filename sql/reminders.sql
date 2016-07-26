@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 CREATE TABLE `reminders` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '提醒项目索引',
   `uId` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '该提醒项目拥有者编号',
-  `status` varchar(15) CHARACTER SET latin1 NOT NULL DEFAULT 'wait' COMMENT '提醒项目状态，默认wait',
+  `status` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT 'wait' COMMENT '提醒项目状态，默认wait',
   `target` bigint(20) UNSIGNED ZEROFILL NOT NULL DEFAULT '00000000000000000000' COMMENT '下次提醒的时间戳',
   `interval` int(10) UNSIGNED NOT NULL DEFAULT '60000' COMMENT '下次提醒的时间间隔(ms)',
-  `data` text CHARACTER SET latin1 NOT NULL COMMENT '提醒项目参数配置'
+  `data` text CHARACTER SET utf8 NOT NULL COMMENT '提醒项目参数配置'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='提醒项目表';
 
 --
