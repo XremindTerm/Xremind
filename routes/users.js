@@ -70,7 +70,7 @@ router.route('/register')
 						var t=(vals[0].usermail==req.body.usermail)?'Mail':'Nickname';
 						res.jsonp({state:'err',detail:'The '+t+' had Existed'});
 					}else{
-						query('insert into users usermail,nickname,password values(?,?,?)',
+						query('insert into users (usermail,nickname,password) values(?,?,?)',
 								[req.body.usermail,req.body.nickname,req.body.password],function(err){
 							if(err){
 								res.jsonp({state:'err',detail:'err'});

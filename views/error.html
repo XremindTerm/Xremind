@@ -1,6 +1,15 @@
-extends layout
+{% extends "layout.html" %}
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+{% block title %}
+  {{ error }}
+{% endblock %}
+
+{% block content%}
+  <h1>statusCode:{{ statusCode }}</h1>
+  <h3>Error:{{ error }}</h3>
+  <h3>Details:{{message}}</h3>
+{% endblock %}
+
+
+
+
