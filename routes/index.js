@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
 	if(req.session.userinfo){
 		res.render('index', { title: 'Express' });
 	}else{
-		res.redirect('/user/login');
+		res.redirect('/user');
 	}
 });
 
