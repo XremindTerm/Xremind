@@ -8,7 +8,8 @@ router.get('/', function(req, res, next) {
   if(req.session.userinfo){
   	res.redirect('/');
   }else{
-  	res.redirect('/user/login');
+  	//res.redirect('/user/login');
+  	res.render('login');
   }
 });
 
@@ -31,7 +32,7 @@ function Out(req,res,defaultView){
 router.route('/login')
 	.get(function(req, res, next) {
 		if(req.session.userinfo){
-	  	res.redirect('/');
+			res.redirect('/');
 	  }else{
 	  	res.render('login');
 	  }
