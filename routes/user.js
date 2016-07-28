@@ -8,7 +8,6 @@ router.get('/', function(req, res, next) {
   if(req.session.userinfo){
   	res.redirect('/');
   }else{
-  	//res.redirect('/user/login');
   	res.render('login');
   }
 });
@@ -52,7 +51,7 @@ router.route('/login')
 						if(vals[0].password==md5(req.body.password)){
 							vals[0].password="*";
 							req.session.userinfo=vals[0];
-							res.redirect('/');
+							out.echo({state:'ok',detail:'login success'});
 						}else{
 							out.echo({state:'err',detail:'Incorrect password'});
 						}
@@ -66,7 +65,8 @@ router.route('/login')
 
 function logout(req,res,next){
 	delete req.session.userinfo;
-	res.redirect('/user/login');
+	var out=Out(req,res,'login');
+	out.echo({state:'ok',detail:'logout success'});
 }
 router.route('/logout')
 	.get(logout)

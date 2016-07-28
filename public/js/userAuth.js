@@ -1,3 +1,7 @@
+function addLinkListen(){
+    var switchBtn=document.getElementById('switchbtn');
+    if(switchBtn)switchBtn.onclick=swithForm;  
+}
 function swithForm() {
     if (!document.getElementById) return false;
     if (!document.getElementById('switchbtn')) return false;
@@ -17,9 +21,7 @@ function swithForm() {
         btnReg.setAttribute('value', '登录');
         attitonText.innerHTML = '没有帐户？<a href="register" id="switchbtn" title="reg">注册</a>';
         userPost.setAttribute('action','/user/login');
-        addLinkListen();
-    }
-    else if (formType == 'reg') {
+    }else if (formType == 'reg') {
         var email_form = document.createElement('li');
         email_form.setAttribute('class', 'email');
         email_form.innerHTML = "<p class='subform'><label for=‘passwords’><input type='email' name='usermail' id='email' required='' placeholder='邮箱'> </label></p>";
@@ -28,11 +30,8 @@ function swithForm() {
         btnReg.setAttribute('value', '注册');
         userPost.setAttribute('action','/user/register');
         attitonText.innerHTML = '有账户了？请<a href="login" id="switchbtn" title="login">登录</a>';
-        addLinkListen();
-    } else {
-        return false;
     }
+    addLinkListen();
+    return false;
 }
-
-var switchBtn=document.getElementById('switchbtn');
-if(switchBtn)switchBtn.addEventListener('click', swithForm,false);
+addLinkListen();
