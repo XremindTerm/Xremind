@@ -3,8 +3,8 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	if(res.session.userinfo){
-  	res.render('index', { title: 'Express' });
+	if(req.session.userinfo){
+		res.render('index', { title: 'Express' });
 	}else{
 		res.redirect('/user/login');
 	}
