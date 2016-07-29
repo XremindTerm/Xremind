@@ -48,7 +48,7 @@
 				height: 35px;
 				color: #345;
 				font-size: 13px;
-				font-weight: bold;
+				font-weight: 500;
 				background: white;
 				border: 1px solid;
 				border-color: rgba(200,220,222,1);
@@ -63,10 +63,14 @@
 				background: transparent;
 				text-align: center;
 				border-color: rgba(200,220,222,0);
-				-webkit-animation: fadeOut 0.8s;
-				-moz-animation: fadeOut 0.8s;
-				-ms-animation: fadeOut 0.8s;
-				animation: fadeOut 0.8s;
+				-webkit-animation: fadeOut 0.6s;
+				-moz-animation: fadeOut 0.6s;
+				-ms-animation: fadeOut 0.6s;
+				animation: fadeOut 0.6s;
+				-webkit-animation-timing-function: ease;
+				-moz-animation-timing-function: ease;
+				-ms-animation-timing-function: ease;
+				animation-timing-function: ease;
 			}
 			.auth-name-edit{
 				display: inline-block;
@@ -87,8 +91,7 @@
 			}
 			.auth-name:focus{
 				color: #456;
-				font-size: 15px;
-				font-weight: bold;
+				font-size: 13px;
 				text-align: left;
 				background: white;
 				border-color: rgba(200,220,222,1);
@@ -107,16 +110,13 @@
 				height: 35px;
 				padding: 6px 12px;
 				font-size: 13px;
-				font-weight: bold;
+				font-weight: 500;
 				color: #456;
 				border: none;
 				border-radius: 50px;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 				box-sizing: border-box;
-			}
-			.auth-pwd:focus{
-				font-size: 15px;
 			}
 			.auth-pwd-submit {
 				display: inline-block;
@@ -166,12 +166,19 @@
 		var form=document.forms[0],
 			user=document.getElementsByName('nickname')[0],
 			pwd	=document.getElementsByName('password')[0],
+			img =document.getElementsByClassName('auth-img')[0],
 			edit=document.getElementsByClassName('auth-name-edit')[0];
 		
 		user.addEventListener('blur',function(){
 			user.value=user.value.trim();
 			if(user.value.length>0){
 				user.classList.add('auth-name-autohide');
+				var tImg=new Image();  
+			    tImg.onload=function(){
+			    	img.src=tImg.src;
+			    };  
+			    tImg.onerror=function(){img.src="/img/default.png";};  
+    			img.src="/user/img/"+user.value;
 			}else{
 				user.classList.remove('auth-name-autohide');
 			}
@@ -179,9 +186,9 @@
 		
 		function clearAuth(){
 			pwd.value="";
-			user.value="";
 			user.classList.remove('auth-name-autohide');
-			user.focus();
+			user.focus&&user.focus();
+			user.select&&user.select();
 		}
 		edit.addEventListener('click',clearAuth,false);
 

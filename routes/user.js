@@ -91,6 +91,16 @@ router.route('/login')
 		}
 	});
 
+router.get('/img/:nickname',function(req,res,next){
+	query('select img from users where nickname = ?',[req.params.nickname],function(err,vals){
+		if(!err&&vals[0]&&vals[0].img){
+			res.redirect(vals[0].img);
+		}else{
+			res.redirect('/img/default.png');
+		}
+	});
+});
+
 function logout(req,res,next){
 	delete req.session.userinfo;
 	var out=Out(req,res,'login');

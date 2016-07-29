@@ -3,7 +3,7 @@
 @-o-keyframes fadeInUp{0%{opacity:0;-o-transform:translateY(20px)}100%{opacity:1;-o-transform:translateY(0)}}
 @keyframes fadeInUp{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 
-@-webkit-keyframes fadeOut{0%{background-color:rgba(255,255,255,0.5)}10%{background-color:rgba(255,255,255,0.3)}100%{background-color:rgba(255,255,255,0)}}
-@-moz-keyframes fadeOut{0%{background-color:rgba(255,255,255,0.5)}10%{background-color:rgba(255,255,255,0.3)}100%{background-color:rgba(255,255,255,0)}}
-@-o-keyframes fadeOut{0%{background-color:rgba(255,255,255,0.5)}10%{background-color:rgba(255,255,255,0.3)}100%{background-color:rgba(255,255,255,0)}}
-@keyframes fadeOut{0%{background-color:rgba(255,255,255,0.5)}10%{background-color:rgba(255,255,255,0.3)}100%{background-color:rgba(255,255,255,0)}}
+@-webkit-keyframes fadeOut{0%{color:rgba(255,255,255,0)}100%{color:rgba(255,255,255,1)}}
+@-moz-keyframes fadeOut{0%{color:rgba(255,255,255,0)}100%{color:rgba(255,255,255,1)}}
+@-o-keyframes fadeOut{0%{color:rgba(255,255,255,0)}100%{color:rgba(255,255,255,1)}}
+@keyframes fadeOut{0%{color:rgba(255,255,255,0)}100%{color:rgba(255,255,255,1)}}
