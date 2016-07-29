@@ -54,7 +54,15 @@ router.route('/add')
 
 // list reminders
 router.all('/list',function(req,res,next){
-
+	var out=Out(req,res,'index');
+	query('select * from reminders where uid = ?'
+			,[req.session.userinfo.id],function(err,vals){
+		if(err){
+			out.echo({state:'err',detail:err});
+		}else{
+			out.echo({state:'ok',detail:'list reminder success',reminders:vals});
+		}
+	});
 });
 
 module.exports = router;
