@@ -13,16 +13,18 @@ router.get('/', function(req, res, next) {
 });
 
 
-function Out(req,res,defaultView){
+function Out(req,res,defaultView,defaultViewOpt){
 	return {
 		_req:req,
 		_res:res,
 		_view:defaultView,
+		_opt:defaultViewOpt,//渲染所需的默认参数，参数可被echo中的obj中覆盖
 		echo:function(obj,view){
 			if(this._req.is('json')){
 				this._res.jsonp(obj);
 			}else{
-				this._res.render(view||this._view,obj);
+				this._opt.json=obj;
+				this._res.render(view||this._view,this._opt);
 			}
 		}
 	}
@@ -33,7 +35,24 @@ router.route('/login')
 		if(req.session.userinfo){
 			res.redirect('/');
 	  }else{
-	  	res.render('login');
+	  	var nickname=req.cookies.nickname;
+	  	var img='/img/default.png';
+	  	query('select img from users where nickname = ? limit 1',[nickname],function(err,vals){
+	  		if(!err){if(vals[0]&&vals[0].img)img=vals[0].img;}
+	  		res.render('auth',{
+		  		form:{
+		  			action:'/user/login',
+		  			nickname:nickname,
+		  			img:img,
+		  			submit:'Go'
+		  		},
+		  		aLink:{
+		  			text:'注册',
+		  			href:'register'
+		  		}
+		  	});
+	  	});
+	  	
 	  }
 	})
 	.post(function(req,res,next){
@@ -41,20 +60,29 @@ router.route('/login')
 				&&req.body.password&&req.body.password.length>=4){
 			query('select * from users where nickname = ? limit 1'
 					,[req.body.nickname],function(err,vals){
-				var out=Out(req,res,'login');
+				var out=Out(req,res,'auth',{
+					form:{
+			  			action:'/user/login',
+			  			nickname:req.body.nickname,
+			  			img:'/img/default.png',
+			  			submit:'Go'
+			  		},
+			  		aLink:{
+			  			text:'注册',
+			  			href:'register'
+			  		}
+				});
 				if(err){
-						out.echo({state:'err',detail:err});
+					out.echo({state:'err',detail:err});
 				}else{
-					if(vals[0]===undefined){
-						out.echo({state:'err','detail':'Cannot find the user.'});
+					if(vals[0]&&vals[0].img)out._opt.form.img=vals[0].img;
+					if(vals[0]&&vals[0].password==md5(req.body.password)){
+						vals[0].password="*";
+						req.session.userinfo=vals[0];
+						res.cookie('nickname', vals[0].nickname, { maxAge: 604800000, httpOnly: true })
+						out.echo({state:'ok',detail:'login success'});
 					}else{
-						if(vals[0].password==md5(req.body.password)){
-							vals[0].password="*";
-							req.session.userinfo=vals[0];
-							out.echo({state:'ok',detail:'login success'});
-						}else{
-							out.echo({state:'err',detail:'Incorrect password'});
-						}
+						out.echo({state:'err',detail:'Incorrect password'});
 					}
 				}
 			});
