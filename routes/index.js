@@ -3,7 +3,11 @@ var router = express.Router();
 
 //User Auth Check
 router.all('*', function(req, res, next) {
+<<<<<<< HEAD
 	var reg=/^\/user(\/|\/login|\/register)?$/;
+=======
+	var reg=/^\/user(\/|\/login|\/register|\/img\/.+)?$/;
+>>>>>>> origin/dev_sfsm
 	if(!req.session.userinfo&&!reg.test(req.originalUrl)){
 		if(req.is('json')){
 			res.jsonp({state:'err',detail:'please login first'});

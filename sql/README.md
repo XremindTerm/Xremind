@@ -33,3 +33,4 @@ id      |int(11)    |索引(Key)
 usermail|varchar(30)|用户邮箱
 password|varchar(35)|用户密码(MD5)
 nickname|varchar(30)|用户昵称
+img     |varchar(30)|用户头像
