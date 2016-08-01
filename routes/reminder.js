@@ -55,12 +55,18 @@ router.route('/add')
 // list reminders
 router.all('/list',function(req,res,next){
 	var out=Out(req,res,'index');
-	query('select * from reminders where uid = ?'
+	query('select `id`,`data`,`status`,`target`,`create` from reminders where uid = ?'
 			,[req.session.userinfo.id],function(err,vals){
 		if(err){
 			out.echo({state:'err',detail:err});
 		}else{
-			out.echo({state:'ok',detail:'list reminder success',reminders:vals});
+			var obj={};
+			for(var i=0,l=vals.length;i<l;i++){
+				if(vals[i]){
+					obj[vals[i].id||i]=vals[i];
+				}
+			}
+			out.echo({state:'ok',detail:'list reminder success',reminders:obj});
 		}
 	});
 });
