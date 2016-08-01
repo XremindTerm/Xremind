@@ -3,32 +3,69 @@
 {% block title %}登录{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="/css/userAuth.css">
+    <style type="text/css">
+        ::-moz-placeholder {
+            color: #009688;
+        }
+
+        ::-webkit-input-placeholder {
+            color: #009688;
+        }
+
+        :-ms-input-placeholder {
+            color: #009688;
+        }
+
+        .formInvalid::-moz-placeholder {
+            color: #F00;
+        }
+
+        .formInvalid::-webkit-input-placeholder {
+            color: #F00;
+        }
+
+        .formInvalid:-ms-input-placeholder {
+            color: #F00;
+        }
+    </style>
 {% endblock %}
 {% block content %}
 
-<header>
-    <img src="/img/logo.png" class="logo" alt="Xremind">
-    <p class="slogon">WORKING SMART.REMEMBER DEEPLY</p>
-</header>
-<form action="/user/login" method="post" id="userPost">
-<section class="warp" id="formContent">
-    <ul class="regList">
-        <li><p class="subform">
-            <label for="username"><input type="text" name="nickname" id="username" required placeholder="用户名"></label>
-        </p></li>
-        <li>
-            <p class="subform">
-                <label for="passwords"><input type="password" name="password" id="passwords" required placeholder="密码">
-                </label></p></li>
+    <header>
+        <img src="/img/logo.png" class="logo" alt="Xremind">
+        <p class="slogon">WORKING SMART.REMEMBER DEEPLY</p>
+    </header>
+    <form action="/user/login" method="post" id="userPost">
+        <section class="warp" id="formContent">
 
-        <li>
-            <p class="subform"><label><input type="submit" value="登录" name="submit" class="btnReg"></label>
-            </p></li>
-    </ul>
-</section>
-</form>
-<p class="switch_form">
-    没有帐户？<a href="/user/register" id="switchbtn" title="reg">注册</a></p>
-<footer><p>©Copy ringht.2016</p></footer>
-<script src="/js/userAuth.js"></script>
+            <ul class="regList">
+                <li><p class="subform">
+                        <label for="username"><input type="text" name="nickname" id="username" required
+                                                     placeholder="用户名"></label>
+                    </p></li>
+                <li>
+                    <p class="subform">
+                        <label for="passwords"><input type="password" name="password" id="passwords" required
+                                                      placeholder="密码">
+                        </label></p></li>
+
+                <li>
+                    <p class="subform"><label><input type="submit" value="登录" name="submit" class="btnReg"></label>
+                    </p></li>
+
+
+            </ul>
+        </section>
+    </form>
+    <p class="switch_form">
+        没有帐户？<a href="/user/register" id="switchbtn" title="reg">注册</a></p>
+    <footer><p>©Copy ringht.2016</p></footer>
+    <script src="/js/userAuth.js"></script>
+    {{ if }}
+    <script type="text/javascript">
+        var state = "{{ state }}";
+        if (state && state.toString() == 'err') {
+            alert('密码错误');
+        }
+    </script>
 {% endblock %}
