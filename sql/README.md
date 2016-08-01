@@ -7,6 +7,7 @@ id		|int(11)	|索引(Key)
 uid		|int(11)	|用户编号(FKey)
 data	|text		|存放提醒项目的参数(JSON格式)
 target	|varchar(15)|下次提醒时间戳
+create  |varchar(15)|项目建立时间戳
 interval|varchar(15)|下次提醒间隔
 status	|varchar(10)|标记提醒项目状态：wait\|action\|done
 

@@ -9,7 +9,7 @@ var session=require('express-session');
 
 var routes = require('./routes/index');
 var user = require('./routes/user');
-var reminder = require('./routes/reminder')
+var reminder = require('./routes/reminder');
 
 var app = express();
 
@@ -36,9 +36,7 @@ app.use(session({
   saveUninitialized:true
 }));
 
-
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.use('/', routes);
 app.use('/user', user);

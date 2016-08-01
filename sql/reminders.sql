@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-07-26 09:30:21
+-- Generation Time: 2016-07-28 17:12:49
 -- 服务器版本： 5.7.11
 -- PHP Version: 5.6.19
 
@@ -31,6 +31,7 @@ CREATE TABLE `reminders` (
   `uid` int(11) NOT NULL COMMENT '拥有者编号',
   `data` text NOT NULL COMMENT '项目参数',
   `target` varchar(15) NOT NULL DEFAULT '1469525261916' COMMENT '下次提醒的时间戳',
+  `create` varchar(15) NOT NULL DEFAULT '1469525261916' COMMENT '项目创建时间',
   `interval` varchar(15) NOT NULL DEFAULT '60000' COMMENT '下次提醒的间隔',
   `status` varchar(10) NOT NULL DEFAULT 'wait' COMMENT '项目状态'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='提醒项目表';
