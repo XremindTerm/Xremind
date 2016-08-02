@@ -103,6 +103,6 @@ var RPID=setInterval(function(){
 				});
 		});
 },1000*60);
-console.log("记忆任务更新进程PID："+RPID);
+console.log("记忆任务更新进程PID："+RPID._idleStart);
 
 module.exports = router;
