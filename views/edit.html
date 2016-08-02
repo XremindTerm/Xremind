@@ -3,13 +3,14 @@
 {% block title %}登录{% endblock %}
 {% block head %}
     <style>
-        *{
+        * {
             background-color: #fff;
         }
+
         html, body {
             padding: 0;
             margin: 0;
-            font-family: "Helvetica Neue",Helvetica,Arial,"Microsoft Yahei","Hiragino Sans GB","Heiti SC","WenQuanYi Micro Hei",sans-serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
             overflow-x: hidden;
         }
 
@@ -39,17 +40,18 @@
 
         }
 
-        header >a> span > img {
+        header > a > span > img {
             width: 30px;
             margin: 8px 0 8px;
         }
-        header>a{
+
+        header > a {
             width: 50px;
             cursor: pointer;
         }
 
         .btnEdit {
-            position: absolute;
+            position: fixed;
             bottom: 38px;
             cursor: pointer;
             right: 36px;
@@ -65,20 +67,31 @@
             border-radius: 30px;
             line-height: 70px;
             text-align: center;
-            background: url('/img/edit.png') no-repeat ;
+            background: url('/img/edit.png') no-repeat;
             background-size: 40px;
             background-position: 50% 50%;
             background-color: #2196F3;
+            transition: all .3s ease-out;
         }
-        #userPost{
+
+        .btnEditHide {
+            bottom: -70px;
+        }
+
+        .btnEditShow {
+            bottom: 38px;
+        }
+
+        #userPost {
             margin: 50px auto 0;
         }
+
         .btnEdit > img {
             width: 43px;
             padding-top: 9px;
         }
 
-        .subform, .subform > label,.textarea {
+        .subform, .subform > label, .textarea {
             margin: 0;
 
         }
@@ -109,23 +122,28 @@
             padding: 0;
 
         }
-        .editList>li{
-            padding:8px 12px 0;
+
+        .editList > li {
+            padding: 8px 12px 0;
         }
-        .editList>li:first-child{
+
+        .editList > li:first-child {
             padding-top: 8px;
             padding-bottom: 0;
         }
-        #more{
+
+        #more {
             position: absolute;
             right: 0;
         }
-        .btnReturn>img{
+
+        .btnReturn > img {
             transition: all 1.2s;
             /*opacity:1;*/
         }
-        .toggleToSave{
-            opacity:0;
+
+        .toggleToSave {
+            opacity: 0;
             -webkit-transform: rotate(120deg);
             -moz-transform: rotate(120deg);
             -ms-transform: rotate(120deg);
@@ -134,7 +152,7 @@
 
         }
 
-                .togglewarp{
+        .togglewarp {
             width: 38px;
             height: 18px;
             display: block;
@@ -143,7 +161,8 @@
             /* align-items: center; */
             padding: 6px;
         }
-        .btnToggle{
+
+        .btnToggle {
             width: 14px;
             height: 3px;
             display: inline-block;
@@ -151,57 +170,73 @@
             margin: 1px;
             /* z-index: 4; */
         }
-            .Toggle1{
-                transform: rotate(-45deg);
-                z-index: 4;
-                transition: all 0.8s;
-            }
-                .ToggleAfter1{
-                    transform: rotate(0deg);
-                    opacity: 0;
-                }
-            .Toggle2{
-                width: 20px;
-                position: relative;
-                padding-left: -14px;
-                left: 4px;
-                transition: all 0.8s;
-            }
 
-            .ToggleAfter2{
-                transform: rotate(-45deg);
+        .Toggle1 {
+            transform: rotate(-45deg);
+            z-index: 4;
+            transition: all 0.8s;
+        }
 
-            }
-        .Toggle3{
+        .ToggleAfter1 {
+            transform: rotate(0deg);
+            opacity: 0;
+        }
+
+        .Toggle2 {
+            width: 20px;
+            position: relative;
+            padding-left: -14px;
+            left: 4px;
+            transition: all 0.8s;
+        }
+
+        .ToggleAfter2 {
+            transform: rotate(-45deg);
+
+        }
+
+        .Toggle3 {
             transform: rotate(45deg);
             transition: all 0.8s;
         }
-        .ToggleAfter3{
+
+        .ToggleAfter3 {
             transform: rotate(225deg);
             width: 11px;
             left: -6px;
             top: -1px;
             position: relative;
         }
+
+        #btnSave {
+            z-index: -1;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 50px;
+            background: transparent;
+        }
     </style>
 {% endblock %}
 {% block content %}
     <header>
-        <a href="#" id="backOrSave">
+        <a href="#" id="btnBack">
             {#<span class="btnMore"><img src="/img/return.png" alt="返回"></span>#}
             <span class="togglewarp ">
             <span class="btnToggle Toggle1"></span>
-            <span class="btnToggle Toggle2" ></span>
+            <span class="btnToggle Toggle2"></span>
             <span class="btnToggle Toggle3"></span>
                 </span>
         </a>
+        <a href="#" id="btnSave"><span></span></a>
         <a href="#" id="more"> <span class="btnMore"><img src="/img/more.png" alt="返回"></span></a>
     </header>
     <form action="/reminder/add" method="post" id="userPost">
         <section class="warp" id="formContent">
             <ul class="editList">
                 <li><p class="subform">
-                        <label for="title"><textarea name="title" id="title" required placeholder="记事标题"></textarea></label>
+                        <label for="title"><textarea name="title" id="title" required
+                                                     placeholder="记事标题"></textarea></label>
                     </p></li>
                 <li>
                     <p class="textarea">
@@ -211,14 +246,14 @@
         </section>
         <a class="btnEdit" id="btnEdit"></a>
     </form>
-{{ status }}    {{ detail }}
+    {{ status }}    {{ detail }}
     <script type="text/javascript">
         function addLoadEvent(func) {
             var oldonload = window.onload;
             if (typeof window.onload != 'function') {
                 window.onload = func;
             } else {
-                window.onload = function() {
+                window.onload = function () {
                     oldonload();
                     func();
                 }
@@ -237,16 +272,11 @@
             var title = document.getElementById('title').value.toString();
             var editContent = document.getElementById('editContent').value.toString();
 
-            var content = new Object();
-            content.id = '';
             var data = new Object();
             data.title = title;
             data.content = editContent;
-            content.data = data;
-            return "data=" + JSON.stringify(content) + "&&id=" + 100;
+            return "data=" + JSON.stringify(data) + "&&id=" + 100;
         }
-
-
 
 
         function postEdit() {
@@ -255,11 +285,10 @@
             if (request) {
                 request.open('POST', '/reminder/add', true);
                 request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                request.onreadystatechange = function() {
+                request.onreadystatechange = function () {
                     if (request.readyState == 4 && request.status) {
-                        if (request.status == 200) {
-                            var text = request.responseText;
-                            console.log(text);
+                        if (request.status != 200) {
+                            return false;
                         }
                     }
                 };
@@ -280,28 +309,42 @@
 
             document.getElementById('editContent').focus();
             var userPost = document.getElementById('userPost');
-            userPost.onsubmit = function() {
-                return postEdit() ? false: true;
+            userPost.onsubmit = function () {
+                return postEdit() ? false : true;
             };
         }
 
         function onEdit() {
             var btnEdit = document.getElementById('btnEdit');
-            var backOrSave = document.getElementById('backOrSave');
+            var btnSave = document.getElementById('btnSave');
+            var btnBack = document.getElementById('btnBack');
             var togglewarp = document.getElementsByClassName('togglewarp')[0].getElementsByTagName('span');
-            btnEdit.addEventListener('click',function () {
-                for (i=1;i<=togglewarp.length;i++){
-                    togglewarp[i-1].className+=' ToggleAfter'+i;
+            btnEdit.addEventListener('click', function () {
+                //返回键修改
+                for (i = 1; i <= togglewarp.length; i++) {
+                    togglewarp[i - 1].className += ' ToggleAfter' + i;
                 }
-                backOrSave.addEventListener('click',function () {
+                //隐藏编辑按键
+                btnSave.style.zIndex+=1;
+                btnBack.style.zIndex-=1;
+                btnEdit.className = "btnEdit btnEditHide";
+            });
 
-                    for (i=1;i<=togglewarp.length;i++){
-                        togglewarp[i-1].className='btnToggle Toggle'+i;
-                    }
-                    goback();//修改返回按钮事件
-                    postEdit();//发送ajax请求
-                });
-                return false;
+            //保存修改
+            btnSave.addEventListener('click', function () {
+                postEdit();//发送ajax请求
+//                goback();//修改返回按钮事件
+                //显示编辑按键
+                btnEdit.className = "btnEdit btnEditShow";
+                for (i = 1; i <= togglewarp.length; i++) {
+                    togglewarp[i - 1].className = 'btnToggle Toggle' + i;
+                }
+                btnSave.style.zIndex-=1;
+                btnBack.style.zIndex+=2;
+            });
+
+            btnBack.addEventListener('click', function () {
+                history.go(-1);
             });
         }
 
@@ -313,7 +356,7 @@
 
             //增加高度
             var title = document.getElementById('title');
-            title.addEventListener('keyup',function () {
+            title.addEventListener('keyup', function () {
                 if (window.navigator.userAgent.indexOf("Firefox") > -1) {
                     this.style.height = this.scrollTop + this.scrollHeight + "px";
                 } else {
@@ -325,25 +368,18 @@
 
 
         function ajustHeight() {
-        var titleHeight  = document.getElementById('title').style.height;
-        titleHeight = titleHeight==''?37:parseInt(titleHeight);
-        var editContent = document.getElementById('editContent');
-        editContent.style.height=parseInt(document.body.clientHeight)-titleHeight-88;
+            var titleHeight = document.getElementById('title').style.height;
+            titleHeight = titleHeight == '' ? 37 : parseInt(titleHeight);
+            var editContent = document.getElementById('editContent');
+            editContent.style.height = parseInt(document.body.clientHeight) - titleHeight - 88;
         }
 
-
-        function goback() {
-            if (!document.getElementById('backOrSave')) return false;
-            var back = document.getElementById('backOrSave');
-            back.addEventListener('backOrSave',function () {
-                history.go(-1);
-            })
-        }
 
         addLoadEvent(onEdit);
-        addLoadEvent(goback);
+//        addLoadEvent(goback);
+        //更改视图高度
         addLoadEvent(ajustHeight);
-        addLoadEvent(addAreaHight);
+
         addLoadEvent(setLinstener);
     </script>
 {% endblock %}
