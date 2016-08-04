@@ -1,0 +1,334 @@
+{% extends "layout.html" %}
+
+{% block title %}登录{% endblock %}
+{% block head %}
+    <style>
+        * {
+            background-color: #fff;
+        }
+        html, body {
+            padding: 0;
+            margin: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+            overflow-x: hidden;
+        }
+        .editList {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        header {
+            height: 50px;
+            width: 100%;
+            top: 0;
+            position: fixed;
+            background-color: #fff;
+            color: #fff;
+            line-height: 50px;
+            display: flex;
+            clear: both;
+        }
+        .btnMore, .btnReturn {
+            display: flex;
+            align-items: center;
+            position: relative;
+            left: 10px;
+        }
+        header > a > span > img {
+            width: 30px;
+            margin: 8px 0 8px;
+        }
+        header > a {
+            width: 50px;
+            cursor: pointer;
+        }
+        .btnEdit {
+            position: fixed;
+            bottom: 38px;
+            cursor: pointer;
+            right: 36px;
+            border: none;
+            box-shadow: 2px 2px 18px #949494;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            width: 60px;
+            height: 60px;
+            background-color: #2196F3;
+            display: inline-block;
+            border-radius: 30px;
+            line-height: 70px;
+            text-align: center;
+            background: url('/img/edit.png') no-repeat;
+            background-size: 40px;
+            background-position: 50% 50%;
+            background-color: #2196F3;
+            transition: all .3s ease-out;
+        }
+        .btnEditHide {
+            bottom: -70px;
+        }
+        .btnEditShow {
+            bottom: 38px;
+        }
+        #userPost {
+            margin: 50px auto 0;
+        }
+        .btnEdit > img {
+            width: 43px;
+            padding-top: 9px;
+        }
+        .subform, .subform > label, .textarea {
+            margin: 0;
+        }
+        #editContent {
+            padding: 0;
+            width: 100%;
+            resize: none;
+            height: 100%;
+            display: inline-block;
+            text-align: left;
+            font-size: 16px;
+            outline: none;
+            border: none;
+        }
+        .subform > label > textarea {
+            width: 100%;
+            height: 33px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+            color: #32b9f6;
+            outline: none;
+            overflow-y: visible;
+            resize: none;
+            margin-top: 4px;
+            padding: 0;
+        }
+        .editList > li {
+            padding: 8px 12px 0;
+        }
+        .editList > li:first-child {
+            padding-top: 8px;
+            padding-bottom: 0;
+        }
+        #more {
+            position: absolute;
+            right: 0;
+        }
+        .btnReturn > img {
+            transition: all 1.2s;
+            /*opacity:1;*/
+        }
+        .toggleToSave {
+            opacity: 0;
+            -webkit-transform: rotate(120deg);
+            -moz-transform: rotate(120deg);
+            -ms-transform: rotate(120deg);
+            -o-transform: rotate(120deg);
+            transform: rotate(120deg);
+        }
+        .togglewarp {
+            width: 38px;
+            height: 18px;
+            display: block;
+            margin: 10px auto 10px;
+            text-align: center;
+            /* align-items: center; */
+            padding: 6px;
+        }
+        .btnToggle {
+            width: 14px;
+            height: 3px;
+            display: inline-block;
+            background-color: #03A9F4;
+            margin: 1px;
+            /* z-index: 4; */
+        }
+        .Toggle1 {
+            transform: rotate(-45deg);
+            z-index: 4;
+            transition: all 0.8s;
+        }
+        .ToggleAfter1 {
+            transform: rotate(0deg);
+            opacity: 0;
+        }
+        .Toggle2 {
+            width: 20px;
+            position: relative;
+            padding-left: -14px;
+            left: 4px;
+            transition: all 0.8s;
+        }
+        .ToggleAfter2 {
+            transform: rotate(-45deg);
+        }
+        .Toggle3 {
+            transform: rotate(45deg);
+            transition: all 0.8s;
+        }
+        .ToggleAfter3 {
+            transform: rotate(225deg);
+            width: 11px;
+            left: -6px;
+            top: -1px;
+            position: relative;
+        }
+        #btnSave {
+            z-index: -1;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 50px;
+            background: transparent;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <header>
+        <a href="#" id="btnBack">
+            {#<span class="btnMore"><img src="/img/return.png" alt="返回"></span>#}
+            <span class="togglewarp ">
+            <span class="btnToggle Toggle1"></span>
+            <span class="btnToggle Toggle2"></span>
+            <span class="btnToggle Toggle3"></span>
+                </span>
+        </a>
+        <a href="#" id="btnSave"><span></span></a>
+        <a href="#" id="more"> <span class="btnMore"><img src="/img/more.png" alt="返回"></span></a>
+    </header>
+    <form action="/reminder/add" method="post" id="userPost">
+        <section class="warp" id="formContent">
+            <ul class="editList">
+                <li><p class="subform">
+                        <label for="title"><textarea name="title" id="title" required placeholder="记事标题"></textarea></label>
+                    </p></li>
+                <li>
+                    <p class="textarea">
+                        <textarea name="content" id="editContent" required placeholder="想到什么？"></textarea></p></li>
+            </ul>
+            <input type="text" style="visibility: hidden" name="id" value="">
+        </section>
+        <a class="btnEdit" id="btnEdit"></a>
+    </form>
+    {{ status }}    {{ detail }}
+    <script type="text/javascript">
+        function addLoadEvent(func) {
+            var oldonload = window.onload;
+            if (typeof window.onload != 'function') {
+                window.onload = func;
+            } else {
+                window.onload = function () {
+                    oldonload();
+                    func();
+                }
+            }
+        }
+        function addHeight(o) {
+            if (window.navigator.userAgent.indexOf("Firefox") > -1) {
+                o.style.height = o.scrollTop + o.scrollHeight + "px";
+            } else {
+                if (o.scrollTop > 0) o.style.height = o.scrollTop + o.scrollHeight + "px";
+            }
+        }
+        function complieDate() {
+            //初始化数据
+            var title = document.getElementById('title').value.toString();
+            var editContent = document.getElementById('editContent').value.toString();
+            var data = new Object();
+            data.title = title;
+            data.content = editContent;
+            return "data=" + JSON.stringify(data) + "&&id=" + 100;
+        }
+        function postEdit() {
+            //Get request
+            var request = new XMLHttpRequest();
+            if (request) {
+                request.open('POST', '/reminder/add', true);
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                request.onreadystatechange = function () {
+                    if (request.readyState == 4 && request.status) {
+                        if (request.status != 200) {
+                            return false;
+                        }
+                    }
+                };
+                request.send(complieDate());
+                return true;
+            } else {
+                alert('Sorry,your browser doesn\'t support XMLHttpRequeset');
+                return false;
+            }
+        }
+        function setLinstener() {
+            if (!document.getElementById) return false;
+            if (!document.getElementById('title')) return false;
+            if (!document.getElementById('userPost')) return false;
+            if (!document.getElementById('editContent')) return false;
+            if (!new XMLHttpRequest) return false;
+            document.getElementById('editContent').focus();
+            var userPost = document.getElementById('userPost');
+            userPost.onsubmit = function () {
+                return postEdit() ? false : true;
+            };
+        }
+        function onEdit() {
+            var btnEdit = document.getElementById('btnEdit');
+            var btnSave = document.getElementById('btnSave');
+            var btnBack = document.getElementById('btnBack');
+            var togglewarp = document.getElementsByClassName('togglewarp')[0].getElementsByTagName('span');
+            btnEdit.addEventListener('click', function () {
+                //返回键修改
+                for (i = 1; i <= togglewarp.length; i++) {
+                    togglewarp[i - 1].className += ' ToggleAfter' + i;
+                }
+                //隐藏编辑按键
+                btnSave.style.zIndex+=1;
+                btnBack.style.zIndex-=1;
+                btnEdit.className = "btnEdit btnEditHide";
+            });
+            //保存修改
+            btnSave.addEventListener('click', function () {
+                postEdit();//发送ajax请求
+//                goback();//修改返回按钮事件
+                //显示编辑按键
+                btnEdit.className = "btnEdit btnEditShow";
+                for (i = 1; i <= togglewarp.length; i++) {
+                    togglewarp[i - 1].className = 'btnToggle Toggle' + i;
+                }
+                btnSave.style.zIndex-=1;
+                btnBack.style.zIndex+=2;
+            });
+            btnBack.addEventListener('click', function () {
+                history.go(-1);
+            });
+        }
+        //增加高度
+        function addAreaHight() {
+            if (!document.getElementById('editContent')) return false;
+            //获得焦点
+            //增加高度
+            var title = document.getElementById('title');
+            title.addEventListener('keyup', function () {
+                if (window.navigator.userAgent.indexOf("Firefox") > -1) {
+                    this.style.height = this.scrollTop + this.scrollHeight + "px";
+                } else {
+                    if (this.scrollTop > 0)
+                        this.style.height = this.scrollTop + this.scrollHeight + "px";
+                }
+            });
+        }
+        function ajustHeight() {
+            var titleHeight = document.getElementById('title').style.height;
+            titleHeight = titleHeight == '' ? 37 : parseInt(titleHeight);
+            var editContent = document.getElementById('editContent');
+            editContent.style.height = parseInt(document.body.clientHeight) - titleHeight - 88;
+        }
+        addLoadEvent(onEdit);
+//        addLoadEvent(goback);
+        //更改视图高度
+        addLoadEvent(ajustHeight);
+        addLoadEvent(setLinstener);
+    </script>
+{% endblock %}
