@@ -101,4 +101,36 @@ router.all('/:shortid',function(req,res,next){
 	});
 });
 
+var RPID=setInterval(function(){
+	console.log('开始分析记忆任务');
+	var nT=new Date().getTime();
+	/*
+		逻辑分析：
+			if nT>=target and status="doing" then target+=interval
+	*/
+		var vaildCondition=" where `target`<="+nT+" and `status`='doing'";
+		//选出已经生效的提醒，创建对应的报告
+		query('insert into reports (`rid`,`uid`,`fulfill`)'
+				+' select `id`,`uid`,"'+nT+'" from reminders'+vaildCondition
+			,function(err){
+				if(err){console.log(err.stack||err);return;}
+				console.log('创建对应的报告成功');
+				//推送已经生效的提醒
+				query('select ?? from reminders'+vaildCondition,[echoReminderKeys],function(err,vals){
+					if(err){console.log(err.stack||err);return;}
+
+					/*推送Code*/
+					console.log('推送已经生效的提醒成功');
+
+					//更新已经生效的提醒
+					query('update reminders set `target`=`target`+`interval`'+vaildCondition,function(err){
+						if(err)console.log(err.stack||err);
+						console.log('更新已经生效的提醒成功');
+						console.log('分析结束');
+					});
+				});
+		});
+},1000*60);
+console.log("记忆任务更新进程PID："+RPID);
+
 module.exports = router;

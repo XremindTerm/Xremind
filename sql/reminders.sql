@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2016 年 08 月 04 日 09:03
+-- 生成日期: 2016 年 08 月 04 日 16:02
 -- 服务器版本: 5.5.20
 -- PHP 版本: 5.3.10
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `reminders` (
   `interval` varchar(15) NOT NULL DEFAULT '60000' COMMENT '下次提醒的间隔',
   `status` varchar(10) NOT NULL DEFAULT 'wait' COMMENT '项目状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='提醒项目表' AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='提醒项目表' AUTO_INCREMENT=25 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
