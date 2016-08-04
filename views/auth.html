@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
+	{% if json.state=='ok' %}
+        <script>location.href="{{ json.redirect }}";</script>
+    {% endif %}
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 		<title>Auth</title>
@@ -192,6 +195,15 @@
 		}
 		edit.addEventListener('click',clearAuth,false);
 
-		{% if form.nickname %}user.classList.add('auth-name-autohide');{% endif %}
+		{% if form.nickname %}
+			user.classList.add('auth-name-autohide');
+			setTimeout(function(){
+				pwd.focus();
+			},500);
+		{% else %}
+			setTimeout(function(){
+				user.focus();
+			},1000);
+		{% endif %}
 	</script>
 </html>

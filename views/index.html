@@ -183,6 +183,7 @@
             background-position: 50% 50%;
             background-color: #2196F3;
             transition: all .4s ease-out;
+            outline: none;
         }
         .btnEditHide {
             bottom: -70px;
@@ -190,25 +191,37 @@
         .btnEditShow {
             bottom: 100px;
         }
+        .mask{
+            position: absolute;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.2;
+            background: black;
+            z-index: 99;
+            visibility: hidden;
+        }
     </style>
 {% endblock %}
 {% block content %}
 
     <header><input type="search" id="searchBar" placeholder="搜索">
     </header>
-    <section class="warp">
-        <ul class="tasklist">
-            {% for item in reminders %}
-                <li><a href="/reminder/add?id={{ item.id }}">
-                        <p class="task_header">{{ item.data.title }}</p>
-                        <p class="task_content">{{ item.data.content }}</p>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    </section>
+    <section class="warp"><ul class="tasklist">
+    {% if json.state=='ok' %}
+        {% asyncEach item in json.reminders %}
+            <li><a href="/reminder/{{ item.shortid }}">
+                    <p class="task_header">{{ item.data.title }}</p>
+                    <p class="task_content">{{ item.data.content }}</p>
+                </a>
+            </li>
+        {% endeach %}
+    {% else %}
+        <li><p style="opacity:0.5">{{ json.detail }}<p></li>
+    {% endif %}
+    </ul></section>
     <a class="btnEdit" id="btnEdit"></a>
-    <p class="colorfulEags">拼命加载中......(ง •̀_•́)ง</p>
     <footer>
         <ul>
             <li><a href="#"><span class="bar bar_action"></span></a></li>
@@ -221,14 +234,14 @@
     <script type="text/javascript">
         var mask = document.createElement('div');
         mask.className = 'mask';
-        var body = document.getElementsByTagName('body')[0];
+        document.body.appendChild(mask);
         var searchBar = document.getElementById('searchBar');
         searchBar.addEventListener('focus', function () {
-            body.appendChild(mask);
+            mask.style.visibility='visible'
         });
-        //        searchBar.addEventListener('blur', function () {
-        //            header.remove(mask);
-        //        });
+       searchBar.addEventListener('blur', function () {
+           mask.style.visibility='hidden';
+       });
         var btnEdit = document.getElementById('btnEdit');
         var footer = document.getElementsByTagName('footer')[0];
         var header = document.getElementsByTagName('header')[0];
@@ -251,5 +264,9 @@
         };
         //滚动滑轮触发scrollFunc方法
         window.onmousewheel = scrollFunc;
+
+        btnEdit.addEventListener('click',function(){
+            location.href='/reminder/add';
+        });
     </script>
 {% endblock %}

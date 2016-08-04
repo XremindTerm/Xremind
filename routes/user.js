@@ -2,58 +2,40 @@ var express = require('express');
 var router = express.Router();
 var query=require('dao/dbPool');
 var md5=require('md5');
+var Out=require('./out');
 
 /* GET user listing. */
 router.get('/', function(req, res, next) {
   if(req.session.userinfo){
   	res.redirect('/');
   }else{
-  	res.render('login');
+  	res.redirect('/user/login');
   }
 });
-
-
-function Out(req,res,defaultView,defaultViewOpt){
-	return {
-		_req:req,
-		_res:res,
-		_view:defaultView,
-		_opt:defaultViewOpt||{},//渲染所需的默认参数，参数可被echo中的obj中覆盖
-		echo:function(obj,view){
-			if(this._req.is('json')){
-				this._res.jsonp(obj);
-			}else{
-				this._opt.json=obj;
-				this._res.render(view||this._view,this._opt);
-			}
-		}
-	}
-}
 
 router.route('/login')
 	.get(function(req, res, next) {
 		if(req.session.userinfo){
 			res.redirect('/');
-	  }else{
-	  	var nickname=req.cookies.nickname;
-	  	var img='/img/default.png';
-	  	query('select img from users where nickname = ? limit 1',[nickname],function(err,vals){
-	  		if(!err){if(vals[0]&&vals[0].img)img=vals[0].img;}
-	  		res.render('auth',{
-		  		form:{
-		  			action:'/user/login',
-		  			nickname:nickname,
-		  			img:img,
-		  			submit:'Go'
-		  		},
-		  		aLink:{
-		  			text:'注册',
-		  			href:'register'
-		  		}
+	  	}else{
+		  	var nickname=req.cookies.nickname;
+		  	var img='/img/default.png';
+		  	query('select img from users where nickname = ? limit 1',[nickname],function(err,vals){
+		  		if(!err){if(vals[0]&&vals[0].img)img=vals[0].img;}
+		  		res.render('auth',{
+			  		form:{
+			  			action:'/user/login',
+			  			nickname:nickname,
+			  			img:img,
+			  			submit:'Go'
+			  		},
+			  		aLink:{
+			  			text:'注册',
+			  			href:'register'
+			  		}
+			  	});
 		  	});
-	  	});
-	  	
-	  }
+		}
 	})
 	.post(function(req,res,next){
 		if(req.body.nickname&&req.body.nickname.length>=4
@@ -80,7 +62,7 @@ router.route('/login')
 						vals[0].password="*";
 						req.session.userinfo=vals[0];
 						res.cookie('nickname', vals[0].nickname, { maxAge: 604800000, httpOnly: true })
-						out.echo({state:'ok',detail:'login success'});
+						out.echo({state:'ok',detail:'login success',redirect:'/reminder'});
 					}else{
 						out.echo({state:'err',detail:'Incorrect password'});
 					}

@@ -4,7 +4,7 @@
 {% block head %}
     <style>
         * {
-            background-color: #fff;
+            background-color: transparent;
         }
         html, body {
             padding: 0;
@@ -22,7 +22,7 @@
             width: 100%;
             top: 0;
             position: fixed;
-            background-color: #fff;
+            background-color: #03A9F4;
             color: #fff;
             line-height: 50px;
             display: flex;
@@ -141,9 +141,9 @@
             width: 14px;
             height: 3px;
             display: inline-block;
-            background-color: #03A9F4;
             margin: 1px;
             /* z-index: 4; */
+            background-color: #fff;
         }
         .Toggle1 {
             transform: rotate(-45deg);
@@ -202,133 +202,121 @@
         <section class="warp" id="formContent">
             <ul class="editList">
                 <li><p class="subform">
-                        <label for="title"><textarea name="title" id="title" required placeholder="记事标题"></textarea></label>
-                    </p></li>
+                        <label for="title">
+                            <textarea name="title" id="title" required placeholder="标题" disabled>{{ json.reminder.data.title }}</textarea>
+                        </label></p></li>
                 <li>
                     <p class="textarea">
-                        <textarea name="content" id="editContent" required placeholder="想到什么？"></textarea></p></li>
+                        <textarea name="content" id="editContent" required placeholder="想记什么？" disabled>{{ json.reminder.data.content }}</textarea></p></li>
             </ul>
-            <input type="text" style="visibility: hidden" name="id" value="">
+            <input type="hidden" name="shortid" id="shortid" value="{{ json.reminder.shortid }}">
         </section>
         <a class="btnEdit" id="btnEdit"></a>
     </form>
-    {{ status }}    {{ detail }}
     <script type="text/javascript">
-        function addLoadEvent(func) {
-            var oldonload = window.onload;
-            if (typeof window.onload != 'function') {
-                window.onload = func;
-            } else {
-                window.onload = function () {
-                    oldonload();
-                    func();
-                }
-            }
-        }
-        function addHeight(o) {
-            if (window.navigator.userAgent.indexOf("Firefox") > -1) {
-                o.style.height = o.scrollTop + o.scrollHeight + "px";
-            } else {
-                if (o.scrollTop > 0) o.style.height = o.scrollTop + o.scrollHeight + "px";
-            }
-        }
-        function complieDate() {
-            //初始化数据
-            var title = document.getElementById('title').value.toString();
-            var editContent = document.getElementById('editContent').value.toString();
-            var data = new Object();
-            data.title = title;
-            data.content = editContent;
-            return "data=" + JSON.stringify(data) + "&&id=" + 100;
-        }
-        function postEdit() {
-            //Get request
-            var request = new XMLHttpRequest();
-            if (request) {
-                request.open('POST', '/reminder/add', true);
-                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                request.onreadystatechange = function () {
-                    if (request.readyState == 4 && request.status) {
-                        if (request.status != 200) {
-                            return false;
-                        }
-                    }
-                };
-                request.send(complieDate());
-                return true;
-            } else {
-                alert('Sorry,your browser doesn\'t support XMLHttpRequeset');
-                return false;
-            }
-        }
-        function setLinstener() {
-            if (!document.getElementById) return false;
-            if (!document.getElementById('title')) return false;
-            if (!document.getElementById('userPost')) return false;
-            if (!document.getElementById('editContent')) return false;
-            if (!new XMLHttpRequest) return false;
-            document.getElementById('editContent').focus();
-            var userPost = document.getElementById('userPost');
-            userPost.onsubmit = function () {
-                return postEdit() ? false : true;
-            };
-        }
-        function onEdit() {
-            var btnEdit = document.getElementById('btnEdit');
-            var btnSave = document.getElementById('btnSave');
-            var btnBack = document.getElementById('btnBack');
-            var togglewarp = document.getElementsByClassName('togglewarp')[0].getElementsByTagName('span');
-            btnEdit.addEventListener('click', function () {
+        (function(doc,win){
+            var btnEdit     = doc.getElementById('btnEdit'),
+                btnSave     = doc.getElementById('btnSave'),
+                btnBack     = doc.getElementById('btnBack'),
+                togglewarp  = doc.getElementsByClassName('togglewarp')[0].getElementsByTagName('span'),
+                title       = doc.getElementById('title'),
+                editContent = doc.getElementById('editContent'),
+                shortid     = doc.getElementById('shortid'),
+                userPost    = doc.getElementById('userPost');
+            function onEdit(){
                 //返回键修改
                 for (i = 1; i <= togglewarp.length; i++) {
                     togglewarp[i - 1].className += ' ToggleAfter' + i;
                 }
                 //隐藏编辑按键
-                btnSave.style.zIndex+=1;
-                btnBack.style.zIndex-=1;
+                title.disabled=false;
+                editContent.disabled=false;
+                btnSave.style.zIndex=1;
+                btnBack.style.zIndex=-1;
                 btnEdit.className = "btnEdit btnEditHide";
-            });
-            //保存修改
-            btnSave.addEventListener('click', function () {
-                postEdit();//发送ajax请求
-//                goback();//修改返回按钮事件
+                setTimeout(function(){
+                    if(title.value.length>0){
+                        editContent.focus();
+                    }else{
+                        title.focus();
+                    }
+                },500);
+            }
+            function defaultTitle(){
+                var nD=new Date();
+                var m=nD.getMonth()+1;if(m<10)m="0"+m;
+                var d=nD.getDate();if(d<10)d="0"+d;
+                return ['Task',m,d].join('-');
+            }
+            function complieDate() {
+                //初始化数据
+                var data = {
+                    title:title.value,
+                    content:editContent.value,
+                };
+                return "shortid=" + shortid.value + "&data=" + encodeURIComponent(JSON.stringify(data));
+            }
+            function postEdit() {
+                //Get request
+                var request = new XMLHttpRequest();
+                if (request) {
+                    request.open('POST', '/reminder/add', true);
+                    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    request.onreadystatechange = function () {
+                        if (request.readyState == 4 && request.status == 200) {
+                            //
+                        }
+                    };
+                    request.send(complieDate());
+                    return true;
+                } else {
+                    alert('Sorry,your browser doesn\'t support XMLHttpRequeset');
+                    return false;
+                }
+            }
+            function onSave() {
+                //检查数据
+                editContent.value=editContent.value.trim();
+                title.value=title.value.trim();
+                if(title.value.length==0)title.value=defaultTitle();
+                if(editContent.value.length==0){
+                    if(confirm('想记的事情为空，是否放弃编辑？')){
+                        onBack();
+                    }else{
+                        return false;
+                    }
+                }
                 //显示编辑按键
-                btnEdit.className = "btnEdit btnEditShow";
                 for (i = 1; i <= togglewarp.length; i++) {
                     togglewarp[i - 1].className = 'btnToggle Toggle' + i;
                 }
-                btnSave.style.zIndex-=1;
-                btnBack.style.zIndex+=2;
-            });
-            btnBack.addEventListener('click', function () {
-                history.go(-1);
-            });
-        }
-        //增加高度
-        function addAreaHight() {
-            if (!document.getElementById('editContent')) return false;
-            //获得焦点
-            //增加高度
-            var title = document.getElementById('title');
-            title.addEventListener('keyup', function () {
-                if (window.navigator.userAgent.indexOf("Firefox") > -1) {
-                    this.style.height = this.scrollTop + this.scrollHeight + "px";
-                } else {
-                    if (this.scrollTop > 0)
-                        this.style.height = this.scrollTop + this.scrollHeight + "px";
-                }
-            });
-        }
-        function ajustHeight() {
-            var titleHeight = document.getElementById('title').style.height;
+                title.disabled=true;
+                editContent.disabled=true;
+                btnSave.style.zIndex=-1;
+                btnBack.style.zIndex=1;
+                btnEdit.className = "btnEdit btnEditShow";
+                //发送ajax请求
+                postEdit();
+            }
+            function onBack(){
+                location.href='/reminder/list';
+            }
+
+            btnEdit.addEventListener('click',onEdit);
+            btnSave.addEventListener('click',onSave);
+            btnBack.addEventListener('click',onBack);
+
+            userPost.onsubmit = function () {return postEdit() ? false : true};
+
+            var titleHeight = title.style.height;
             titleHeight = titleHeight == '' ? 37 : parseInt(titleHeight);
-            var editContent = document.getElementById('editContent');
-            editContent.style.height = parseInt(document.body.clientHeight) - titleHeight - 88;
-        }
-        addLoadEvent(onEdit);
-//        addLoadEvent(goback);
-        //更改视图高度
-        addLoadEvent(ajustHeight);
-        addLoadEvent(setLinstener);
+            title.placeholder="标题("+defaultTitle()+")";
+            editContent.style.height = parseInt(doc.body.clientHeight) - titleHeight - 88;
+
+            {% if json.reminder %}
+            {% else %}
+                onEdit();
+            {% endif %}
+        })(document);
     </script>
 {% endblock %}
