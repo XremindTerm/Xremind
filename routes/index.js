@@ -16,7 +16,7 @@ router.all('*', function(req, res, next) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	if(req.session.userinfo){
-		res.render('index', { title: 'Express' });
+		res.redirect('/reminder');
 	}else{
 		res.redirect('/user');
 	}
