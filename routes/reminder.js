@@ -4,9 +4,11 @@ var query=require('dao/dbPool');
 var Out=require('./out');
 var shortid=require('shortid');
 
+var echoKeys=['shortid','data','target','create','status'];
+
 // All reminders listening
 router.all('/',function(req,res,next){
-	res.redirect('/reminder/list');
+	res.redirect('/reminder/list/action');
 });
 
 // add new reminders
@@ -54,10 +56,12 @@ router.route('/add')
 	});
 
 // list reminders
-router.all('/list',function(req,res,next){
-	var out=Out(req,res,'index');
-	var keys=['shortid','data','target','create','status'];
-	query('select ?? from reminders where uid = ?',[keys,req.session.userinfo.id],function(err,vals){
+router.all('/list/:nav',function(req,res,next){
+	var nav=req.params.nav||'action';
+	var out=Out(req,res,'index',{
+		nav:nav
+	});
+	query('select ?? from reminders where uid = ? and status = ?',[echoKeys,req.session.userinfo.id,nav],function(err,vals){
 		if(err){
 			out.echo({state:'err',detail:err});
 		}else{
@@ -82,9 +86,8 @@ router.all('/list',function(req,res,next){
 
 router.all('/:shortid',function(req,res,next){
 	var out=Out(req,res,'edit');
-	var keys=['shortid','data','target','create','status'];
 	query('select ?? from reminders where uid = ? and shortid = ? limit 1'
-	,[keys,req.session.userinfo.id,req.params.shortid]
+	,[echoKeys,req.session.userinfo.id,req.params.shortid]
 	,function(err,vals){
 		if(err){
 			out.echo({state:'err',detail:err});
@@ -116,7 +119,7 @@ var RPID=setInterval(function(){
 				if(err){console.log(err.stack||err);return;}
 				console.log('创建对应的报告成功');
 				//推送已经生效的提醒
-				query('select ?? from reminders'+vaildCondition,[echoReminderKeys],function(err,vals){
+				query('select ?? from reminders'+vaildCondition,[echoKeys],function(err,vals){
 					if(err){console.log(err.stack||err);return;}
 
 					/*推送Code*/

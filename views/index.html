@@ -2,48 +2,12 @@
  {% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %}
 {% block head %}
     <style type="text/css">
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            background-color: #f0f0f0;
-        }
-        header {
-            text-align: center;
-            height: 50px;
-            width: 100%;
-            background-color: #2196F3;
-            color: #fff;
-            -webkit-box-shadow: 2px 2px 10px #ddd;
-            -moz-box-shadow: 2px 2px 10px #ddd;
-            box-shadow: 0 6px 16px #e0e0e0;
-            line-height: 50px;
-            display: flex;
-            align-items: center;
-            position: fixed;
-            transition: all 0.4s ease-out;
-        }
-        .headerHide {
-            top: -50px;
-            box-shadow: none;
-        }
-        .headerShow {
-            top: 0
-        }
-        .tasklist {
-            padding-left: 0
-        }
-        .tasklist > li {
-            list-style: none;
-            background-color: #fff;
-            margin: 8px 0 8px;
-            color: #424242;
-            /* border-radius: 4px; */
-            padding: 7px 17px 12px;
-            border-bottom: 2px solid #dedede;
-        }
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow-x: hidden; background-color: #f0f0f0; }
+        header { text-align: center; height: 50px; width: 100%; background-color: #2196F3; color: #fff; -webkit-box-shadow: 2px 2px 10px #ddd; -moz-box-shadow: 2px 2px 10px #ddd; box-shadow: 0 6px 16px #e0e0e0; line-height: 50px; display: flex; align-items:center; position: fixed; transition: all 0.4s ease-out; }
+        .headerHide { top: -50px; box-shadow: none; } 
+        .headerShow { top: 0 }
+        .tasklist { padding-left: 0 }
+        .tasklist > li { list-style: none; background-color: #fff; margin: 8px 0 8px; color: #424242; padding: 7px 17px 12px; border-bottom: 2px solid #dedede; }
         #searchBar {
             width: 96%;
             height: 76%;
@@ -94,19 +58,8 @@
             height: 100%;
             display: block;
         }
-        footer {
-            position: fixed;
-            margin-top: -40px;
-            width: 100%;
-            bottom: 0;
-            height: 50px;
-            background-color: #fff;
-            text-align: center;
-            transition: all 0.4s ease-out;
-        }
-        .warp {
-            margin-top: 60px;
-        }
+        footer { position: fixed; margin-top: -40px; width: 100%; bottom: 0; height: 50px; background-color: #fff; text-align: center; transition: all 0.4s ease-out; }
+
         footer > ul {
             list-style: none;
             padding: 0;
@@ -121,37 +74,44 @@
             margin: 0;
             height: 100%;
             padding: 0;
-        }
-        footer > ul > li > a {
-            width: 100%;
-            height: 100%;
-            display: inline-block;
-        }
-        .bar_action {
-            background: url("/img/article1.svg") no-repeat;
             background-position: 50% 50%;
             background-size: 32px;
+            background-repeat: no-repeat;
+        }
+        footer > ul > li > a {
+            display:inline-block;
+            width:100%;
+            height:100%;
+        }
+        .bar_action {
+            background-image: url("/img/article0.svg");
+        }
+        .bar_action.active{
+            background-image: url("/img/article1.svg");
         }
         .bar_wait {
-            background: url("/img/clock0.svg") no-repeat;
-            background-position: 50% 50%;
-            background-size: 25px;
+            background-image: url("/img/clock0.svg");
+        }
+        .bar_wait.active{
+            background-image: url("/img/clock1.svg");
         }
         .bar_done {
-            background: url("/img/done0.svg") no-repeat;
-            background-position: 50% 50%;
-            background-size: 29px;
+            background-image: url("/img/done0.svg");
+        }
+        .bar_done.active{
+            background-image: url("/img/done1.svg");
+        }
+        .bar_more {
+            background-image: url("/img/more0.svg");
+        }
+        .bar_more.active{
+             background-image: url("/img/more1.svg");
         }
         .footerHide {
             bottom: -50px;
         }
         .footerShow {
             bottom: 0;
-        }
-        .bar_more {
-            background: url("/img/more0.svg") no-repeat;
-            background-position: 50% 50%;
-            background-size: 29px;
         }
         .colorfulEags {
             text-align: center;
@@ -208,26 +168,28 @@
 
     <header><input type="search" id="searchBar" placeholder="搜索">
     </header>
-    <section class="warp"><ul class="tasklist">
-    {% if json.state=='ok' %}
-        {% asyncEach item in json.reminders %}
-            <li><a href="/reminder/{{ item.shortid }}">
-                    <p class="task_header">{{ item.data.title }}</p>
-                    <p class="task_content">{{ item.data.content }}</p>
-                </a>
-            </li>
-        {% endeach %}
-    {% else %}
-        <li><p style="opacity:0.5">{{ json.detail }}<p></li>
-    {% endif %}
-    </ul></section>
+    <section style="margin-top: 60px;">
+        <ul class="tasklist">
+            {% if json.state=='ok' %}
+                {% asyncEach item in json.reminders %}
+                    <li><a href="/reminder/{{ item.shortid }}">
+                            <p class="task_header">{{ item.data.title }}</p>
+                            <p class="task_content">{{ item.data.content }}</p>
+                        </a>
+                    </li>
+                {% endeach %}
+            {% else %}
+                <li><p style="opacity:0.5">{{ json.detail }}<p></li>
+            {% endif %}
+        </ul>
+    </section>
     <a class="btnEdit" id="btnEdit"></a>
     <footer>
         <ul>
-            <li><a href="#"><span class="bar bar_action"></span></a></li>
-            <li><a href="#"><span class="bar bar_wait"></span></a></li>
-            <li><a href="#"><span class="bar bar_done"></span></a></li>
-            <li><a href="#"><span class="bar bar_more"></span></a></li>
+            <li class="bar_action{% if nav=='action' %} active{% endif %}"><a href="/reminder/list/action"></a></li>
+            <li class="bar_wait{% if nav=='wait' %} active{% endif %}"><a href="/reminder/list/wait"></a></li>
+            <li class="bar_done{% if nav=='done' %} active{% endif %}"><a href="/reminder/list/done"></a></li>
+            <li class="bar_more"><a href="#"></a></li>
         </ul>
     </footer>
 
@@ -268,5 +230,6 @@
         btnEdit.addEventListener('click',function(){
             location.href='/reminder/add';
         });
+        
     </script>
 {% endblock %}
