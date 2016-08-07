@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4cb1b046-089b-415b-860b-d90430865485" name="Default" comment="fix home page">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/routes/out.js" />
+    <list default="true" id="4cb1b046-089b-415b-860b-d90430865485" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/reminder.js" afterPath="$PROJECT_DIR$/routes/reminder.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/user.js" afterPath="$PROJECT_DIR$/routes/user.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/auth.html" afterPath="$PROJECT_DIR$/views/auth.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/edit.html" afterPath="$PROJECT_DIR$/views/edit.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.html" afterPath="$PROJECT_DIR$/views/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/layout.html" afterPath="$PROJECT_DIR$/views/layout.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/login.html" afterPath="$PROJECT_DIR$/views/login.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/register.html" afterPath="$PROJECT_DIR$/views/register.html" />
     </list>
     <ignored path="Xremind.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,7 +48,7 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2790">
+            <state relative-caret-position="486">
               <caret line="270" column="14" selection-start-line="270" selection-start-column="14" selection-end-line="270" selection-end-column="14" />
               <folding>
                 <element signature="n#style#0;n#p#0;n#li#1;n#ul#0;n#section#0;n#!!top" expanded="true" />
@@ -350,7 +339,7 @@
       <workItem from="1470375645152" duration="2561000" />
       <workItem from="1470403618433" duration="2956000" />
       <workItem from="1470416325443" duration="1517000" />
-      <workItem from="1470446925201" duration="9470000" />
+      <workItem from="1470446925201" duration="9532000" />
     </task>
     <task id="LOCAL-00001" summary="fix home page">
       <created>1470217116872</created>
@@ -359,11 +348,18 @@
       <option name="project" value="LOCAL" />
       <updated>1470217116872</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="megre from dev_sfsm">
+      <created>1470542814356</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1470542814356</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="130147000" />
+    <option name="totallyTimeSpent" value="130209000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1366" height="741" extended-state="6" />
@@ -404,7 +400,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <MESSAGE value="fix home page" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix home page" />
+    <MESSAGE value="megre from dev_sfsm" />
+    <option name="LAST_COMMIT_MESSAGE" value="megre from dev_sfsm" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -714,7 +711,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2790">
+        <state relative-caret-position="486">
           <caret line="270" column="14" selection-start-line="270" selection-start-column="14" selection-end-line="270" selection-end-column="14" />
           <folding>
             <element signature="n#style#0;n#p#0;n#li#1;n#ul#0;n#section#0;n#!!top" expanded="true" />
