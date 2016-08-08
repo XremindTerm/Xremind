@@ -3,10 +3,11 @@ var router = express.Router();
 var query = require('dao/dbPool');
 var md5 = require('md5');
 var Out = require('./out');
-var server = require('../bin/www').server;
+
 
 /* GET user listing. */
 router.get('/', function (req, res, next) {
+
     if (req.session.userinfo) {
         res.redirect('/');
     } else {
@@ -66,6 +67,7 @@ router.route('/login')
                             req.session.userinfo = vals[0];
                             res.cookie('nickname', vals[0].nickname, {maxAge: 604800000, httpOnly: true})
                             out.echo({state: 'ok', detail: 'login success', redirect: '/reminder'});
+
                         } else {
                             out.echo({state: 'err', detail: 'Incorrect password'});
                         }

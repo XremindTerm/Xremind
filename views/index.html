@@ -267,12 +267,15 @@
 </footer>
 
 <script type="text/javascript">
+    var socket = io();
+
     var mask = document.createElement('div');
     mask.className = 'mask';
     document.body.appendChild(mask);
     var searchBar = document.getElementById('searchBar');
     searchBar.addEventListener('focus', function () {
-        mask.style.visibility = 'visible'
+        mask.style.visibility = 'visible';
+
     });
     searchBar.addEventListener('blur', function () {
         mask.style.visibility = 'hidden';
@@ -303,12 +306,28 @@
         location.href = '/reminder/add';
     });
 
-    var socket = io();
-//
-//    socket.emit('chat message', {
-//        msg: msgbox.value,
-//        username: username.value,
-//        to: msgbox.getAttribute('title')
-//    });
+
+    var cookie = document.cookie;
+
+    var arrCookie = cookie.split(';');
+    var nickname = 'sfsm';
+    for (var i = 0; i < arrCookie.length; i++) {
+        var arr = arrCookie[i].split('=');
+        if (arr[0] == 'nickname') {
+            username = arr[1];
+            break;
+        }
+    }
+    socket.emit('init', {nickname: nickname});
+    socket.on('chatBack', function (msg) {
+        console.log(msg)
+    });
+
+    //
+    //    socket.emit('chat message', {
+    //        msg: msgbox.value,
+    //        username: username.value,
+    //        to: msgbox.getAttribute('title')
+    //    });
 </script>
 {% endblock %}

@@ -4,6 +4,10 @@ var query = require('dao/dbPool');
 var Out = require('./out');
 var shortid = require('short-id');
 
+var io = require('socket.io')();
+var pushMsg = require('./socket');
+var socket = require('../routes/socket');
+
 // All reminders listening
 router.all('/', function (req, res, next) {
     res.redirect('/reminder/list');
@@ -58,11 +62,22 @@ router.route('/add')
 
 // list reminders
 router.all('/list', function (req, res, next) {
+
+    pushMsg.pushMsg('sfsm', 'hello', function (err) {
+        if (err) {
+            return console.log(err);
+        }
+        else {
+            console.log('succeed')
+        }
+    });
+
     var out = Out(req, res, 'index');
     var keys = ['shortid', 'data', 'target', 'create', 'status'];
     query('select ?? from reminders where uid = ?', [keys, req.session.userinfo.id], function (err, vals) {
         if (err) {
             out.echo({state: 'err', detail: err});
+
         } else {
             if (vals.length > 0) {
                 var obj = {};
@@ -76,7 +91,16 @@ router.all('/list', function (req, res, next) {
                     }
                 }
                 console.log(JSON.stringify(vals));
+
                 out.echo({state: 'ok', detail: 'list reminder success', reminders: vals});
+                pushMsg.pushMsg(app.io, 'sfsm', 'hello', function (err) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    else {
+                        console.log('succeed')
+                    }
+                })
             } else {
                 out.echo({state: 'err', detail: 'NOTE：暂无任务'});
             }
