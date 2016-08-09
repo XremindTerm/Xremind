@@ -45,7 +45,6 @@
         background-color: #fff;
         margin: 8px 0 8px;
         color: #424242;
-        /* border-radius: 4px; */
         padding: 7px 17px 12px;
         border-bottom: 2px solid #dedede;
     }
@@ -121,10 +120,6 @@
         transition: all 0.4s ease-out;
     }
 
-    .warp {
-        margin-top: 60px;
-    }
-
     footer > ul {
         list-style: none;
         padding: 0;
@@ -140,30 +135,47 @@
         margin: 0;
         height: 100%;
         padding: 0;
+        background-position: 50% 50%;
+        background-size: 32px;
+        background-repeat: no-repeat;
     }
 
     footer > ul > li > a {
+        display: inline-block;
         width: 100%;
         height: 100%;
-        display: inline-block;
     }
 
     .bar_action {
-        background: url("/img/article1.svg") no-repeat;
-        background-position: 50% 50%;
-        background-size: 32px;
+        background-image: url("/img/article0.svg");
+    }
+
+    .bar_action.active {
+        background-image: url("/img/article1.svg");
     }
 
     .bar_wait {
-        background: url("/img/clock0.svg") no-repeat;
-        background-position: 50% 50%;
-        background-size: 25px;
+        background-image: url("/img/clock0.svg");
+    }
+
+    .bar_wait.active {
+        background-image: url("/img/clock1.svg");
     }
 
     .bar_done {
-        background: url("/img/done0.svg") no-repeat;
-        background-position: 50% 50%;
-        background-size: 29px;
+        background-image: url("/img/done0.svg");
+    }
+
+    .bar_done.active {
+        background-image: url("/img/done1.svg");
+    }
+
+    .bar_more {
+        background-image: url("/img/more0.svg");
+    }
+
+    .bar_more.active {
+        background-image: url("/img/more1.svg");
     }
 
     .footerHide {
@@ -172,12 +184,6 @@
 
     .footerShow {
         bottom: 0;
-    }
-
-    .bar_more {
-        background: url("/img/more0.svg") no-repeat;
-        background-position: 50% 50%;
-        background-size: 29px;
     }
 
     .colorfulEags {
@@ -240,7 +246,7 @@
 
 <header><input type="search" id="searchBar" placeholder="搜索">
 </header>
-<section class="warp">
+<section style="margin-top: 60px;">
     <ul class="tasklist">
         {% if json.state=='ok' %}
         {% asyncEach item in json.reminders %}
@@ -259,23 +265,20 @@
 <a class="btnEdit" id="btnEdit"></a>
 <footer>
     <ul>
-        <li><a href="#"><span class="bar bar_action"></span></a></li>
-        <li><a href="#"><span class="bar bar_wait"></span></a></li>
-        <li><a href="#"><span class="bar bar_done"></span></a></li>
-        <li><a href="#"><span class="bar bar_more"></span></a></li>
+        <li class="bar_action{% if nav=='action' %} active{% endif %}"><a href="/reminder/list/action"></a></li>
+        <li class="bar_wait{% if nav=='wait' %} active{% endif %}"><a href="/reminder/list/wait"></a></li>
+        <li class="bar_done{% if nav=='done' %} active{% endif %}"><a href="/reminder/list/done"></a></li>
+        <li class="bar_more"><a href="#"></a></li>
     </ul>
 </footer>
 
 <script type="text/javascript">
-    var socket = io();
-
     var mask = document.createElement('div');
     mask.className = 'mask';
     document.body.appendChild(mask);
     var searchBar = document.getElementById('searchBar');
     searchBar.addEventListener('focus', function () {
-        mask.style.visibility = 'visible';
-
+        mask.style.visibility = 'visible'
     });
     searchBar.addEventListener('blur', function () {
         mask.style.visibility = 'hidden';
@@ -303,14 +306,37 @@
     //滚动滑轮触发scrollFunc方法
     window.onmousewheel = scrollFunc;
     btnEdit.addEventListener('click', function () {
-        location.href = '/reminder/add';
+        postSomething('hey,mia')
     });
 
+    function postSomething(data) {
+        var xhr = new XMLHttpRequest();
+        if (xhr) {
+            // xhr.open([string]method,[string]url,[boolen optional]async,[string optional]user, [sting optional]password)
+            xhr.open('POST', '/reminder/test', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onreadystatechange = function () {
+                if ((xhr.readyState == 4) && (xhr.status == 200)) {
+                    //return xhr.responseText、xhr.responseType、xhr.responseXML
+                    console.log(xhr.responseText);
 
-    var cookie = document.cookie;
+                }
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
+        xhr.send("data=" + data);
+        return true;
+    }
 
-    var arrCookie = cookie.split(';');
+
+    var socket = io();
     var nickname = 'sfsm';
+    var cookie = document.cookie;
+    var arrCookie = cookie.split(';');
     for (var i = 0; i < arrCookie.length; i++) {
         var arr = arrCookie[i].split('=');
         if (arr[0] == 'nickname') {
@@ -318,16 +344,12 @@
             break;
         }
     }
-    socket.emit('init', {nickname: nickname});
-    socket.on('chatBack', function (msg) {
-        console.log(msg)
-    });
 
-    //
-    //    socket.emit('chat message', {
-    //        msg: msgbox.value,
-    //        username: username.value,
-    //        to: msgbox.getAttribute('title')
-    //    });
+    socket.emit('chatBack', {nickname: 'sfsm'});
+    socket.on('chatBack', function (msg) {
+        console.log(msg.color + "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+//        header.style.backgroundColor = msg.color;
+    });
 </script>
+
 {% endblock %}

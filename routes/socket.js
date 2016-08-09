@@ -1,13 +1,6 @@
 /**
  * Created by jack on 8/7/16.
  */
-//
-// module.exports = function (io) {
-//     io.on('connect', function (socket) {
-//         console.log('A new user is in');
-//         socket.on('login', msg)
-//     })
-// };
 var io = require('socket.io')();
 var userList = {};
 
@@ -20,14 +13,15 @@ module.exports.socket = function (io) {
         var socketID = socket.id;
         var nickname = '';
 
-        socket.on('init', function (msg) {
+        socket.on('chatBack', function (msg) {
             console.log(msg);
-            //判断用户是否加入
+            // 判断用户是否加入
+            console.log(msg.nickname);
             if (!userList.hasOwnProperty(msg.nickname)) {
                 userList[msg.nickname] = socketID;
             }
+            console.log('__________++________');
             console.log(userList);
-            console.log("_____________+++_________________")
         });
 
 
@@ -38,27 +32,32 @@ module.exports.socket = function (io) {
             }
 
         })
+
     });
+
 
     return router;
 };
 
-module.exports.pushMsg = function (username, msgs, callback) {
+
+module.exports.push = function (username, msgs, callback) {
+
     var sendflag = false;
-    var io = require('socket.io')();
-    io.on('connection', function (socket) {
-        for (var name in userList) {
-            if (username == name) {
-                socket.to(userList[name]).emit('chatBack', msgs);
-                sendflag = true;
-            }
+    console.log(userList);
+    for (var name in userList) {
+        if (username == name) {
+            console.log(userList[name]);
+            io.to(userList[name]).emit(msgs);
+            // io.sockets.socket(userList[name]).emit('chatBack', msgs)
+            // io.socket.connected[userList[name]].emit('chatBack', msgs);
+            sendflag = true;
         }
-        if (callback && typeof(callback) == 'function') {
-            if (sendflag) {
-                callback('ok', 'push is finished');
-            } else {
-                callback('err', 'user no found or socket connet error')
-            }
+    }
+    if (callback && typeof(callback) == 'function') {
+        if (sendflag) {
+            callback(false, 'push is finished');
+        } else {
+            callback(true, 'user no found or socket connet error')
         }
-    })
+    }
 };
