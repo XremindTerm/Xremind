@@ -345,11 +345,11 @@
         }
     }
 
-    socket.emit('chatBack', {nickname: 'sfsm'});
+    socket.emit('init', {nickname: 'sfsm'});
     socket.on('chatBack', function (msg) {
-        console.log(msg.color + "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-//        header.style.backgroundColor = msg.color;
+        header.style.backgroundColor = msg.color;
     });
 </script>
+
 
 {% endblock %}
