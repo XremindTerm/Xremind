@@ -2,3 +2,6 @@
 /.idea/workspace.xml
 /.gitignore
 /.vscode/*
+.idea
+.vscode
+.gitignore

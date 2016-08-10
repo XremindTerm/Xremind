@@ -47,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/user', user);
 app.use('/reminder', reminder);
-app.use('/user', require('./node_modules/dao/socket').socket(app.io));
+app.use('/reminder', require('./node_modules/dao/socket').socket(app.io));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
