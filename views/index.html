@@ -306,7 +306,7 @@
     //滚动滑轮触发scrollFunc方法
     window.onmousewheel = scrollFunc;
     btnEdit.addEventListener('click', function () {
-        postSomething('hey,mia')
+        location.href='/reminder/add';
     });
 
     function postSomething(data) {
@@ -347,7 +347,7 @@
 
     socket.emit('init', {nickname: 'sfsm'});
     socket.on('chatBack', function (msg) {
-        header.style.backgroundColor = msg.color;
+        header.style.backgroundColor = msg.msg;
     });
 </script>
 

@@ -83,6 +83,3 @@ app.use(function (err, req, res, next) {
 });
 module.exports = app;
 
-
-// production error handler
-// no stacktraces leaked to user

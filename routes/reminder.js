@@ -2,27 +2,34 @@ var express = require('express');
 var router = express.Router();
 var query = require('dao/dbPool');
 var Out = require('./out');
-var shortid = require('short-id');
-var push = require('./../node_modules/dao/push');
+var shortid = require('shortid');
+
+// //socket推送方式
+// //Sample
+// var socket = require('../node_modules/dao/push');
+// var userList = {
+//     //uid:[rid,]
+//     'sfsm': [12, 14, 15],
+//     'jack': [15, 18],
+//     'leo': [19, 20]
+// };
+// socket.push(userList, function (err, result) {
+//     if (err) {
+//         console.log(result);
+//     } else {
+//         //Succeed
+//         //return result model like userList
+//         //TODO
+//     }
+// });
+
 
 var echoKeys = ['shortid', 'data', 'target', 'create', 'status'];
-
 
 // All reminders listening
 router.all('/', function (req, res, next) {
     res.redirect('/reminder/list/action');
 });
-
-// add new reminders
-router.route('/test')
-    .post(function (req, res, next) {
-        push.push('sfsm', '#f00', function (err, details) {
-            if (err) return console.error(details)
-            // console.log(details)
-        });
-        res.json({msg: 'msg'})
-    });
-
 
 // add new reminders
 router.route('/add')
@@ -48,40 +55,38 @@ router.route('/add')
                 };
                 query('insert into reminders set ?', data, function (err, vals) {
                     if (err) {
-                        out.echo({state: 'err', detail: err});
+                        out.echo({ state: 'err', detail: err });
                     } else {
-                        out.echo({state: 'ok', detail: 'create reminder success'});
+                        out.echo({ state: 'ok', detail: 'create reminder success' });
                     }
                 });
             } else {
                 var data = {
-                    data: req.body.data.trim()
+                    data: req.body.data.trim(),
                 };
                 query('update reminders set ? where uid = ? and shortid = ? limit 1'
                     , [data, req.session.userinfo.id, req.body.shortid], function (err) {
                         if (err) {
-                            out.echo({state: 'err', detail: err});
+                            out.echo({ state: 'err', detail: err });
                         } else {
-                            out.echo({state: 'ok', detail: 'update reminder success'});
+                            out.echo({ state: 'ok', detail: 'update reminder success' });
                         }
                     });
             }
         } else {
-            out.echo({state: 'err', detail: 'Invaild Param Data'});
+            out.echo({ state: 'err', detail: 'Invaild Param Data' });
         }
     });
 
 // list reminders
 router.all('/list/:nav', function (req, res, next) {
-
-
     var nav = req.params.nav || 'action';
     var out = Out(req, res, 'index', {
         nav: nav
     });
     query('select ?? from reminders where uid = ? and status = ?', [echoKeys, req.session.userinfo.id, nav], function (err, vals) {
         if (err) {
-            out.echo({state: 'err', detail: err});
+            out.echo({ state: 'err', detail: err });
         } else {
             if (vals.length > 0) {
                 var obj = {};
@@ -95,9 +100,9 @@ router.all('/list/:nav', function (req, res, next) {
                     }
                 }
                 console.log(JSON.stringify(vals));
-                out.echo({state: 'ok', detail: 'list reminder success', reminders: vals});
+                out.echo({ state: 'ok', detail: 'list reminder success', reminders: vals });
             } else {
-                out.echo({state: 'err', detail: 'NOTE：暂无任务'});
+                out.echo({ state: 'err', detail: 'NOTE：暂无任务' });
             }
         }
     });
@@ -109,16 +114,16 @@ router.all('/:shortid', function (req, res, next) {
         , [echoKeys, req.session.userinfo.id, req.params.shortid]
         , function (err, vals) {
             if (err) {
-                out.echo({state: 'err', detail: err});
+                out.echo({ state: 'err', detail: err });
             } else {
                 if (vals[0]) {
                     try {
                         vals[0].data = JSON.parse(vals[0].data);
                     } catch (e) {
                     }
-                    out.echo({state: 'ok', detail: 'get reminder success', reminder: vals[0]});
+                    out.echo({ state: 'ok', detail: 'get reminder success', reminder: vals[0] });
                 } else {
-                    out.echo({state: 'err', detail: 'cannot find the reminder'});
+                    out.echo({ state: 'err', detail: 'cannot find the reminder' });
                 }
             }
         });
@@ -153,7 +158,7 @@ var RPID = setInterval(function () {
 
                 //更新已经生效的提醒
                 query('update reminders set `target`=`target`+`interval`' + vaildCondition, function (err) {
-                    if (err)console.log(err.stack || err);
+                    if (err) console.log(err.stack || err);
                     console.log('更新已经生效的提醒成功');
                     console.log('分析结束');
                 });
