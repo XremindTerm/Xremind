@@ -306,7 +306,7 @@
     //滚动滑轮触发scrollFunc方法
     window.onmousewheel = scrollFunc;
     btnEdit.addEventListener('click', function () {
-        location.href='/reminder/add';
+        location.href = '/reminder/add';
     });
 
     function postSomething(data) {
@@ -347,8 +347,26 @@
 
     socket.emit('init', {nickname: 'sfsm'});
     socket.on('chatBack', function (msg) {
-        header.style.backgroundColor = msg.msg;
+        addList(msg.shortid, msg.title, msg.comtent)
     });
+
+    function addList(id, title, content) {
+        var tasklist = document.getElementsByClassName('tasklist')[0];
+        var liTask = document.createElement('li');
+        var aTask = document.createElement('a');
+        aTask.setAttribute('herf', '/reminder/' + id);
+        var p1 = document.createElement('p');
+        p1.className = 'task_header';
+        p1.innerHTML = title;
+        var p2 = document.createElement('p');
+        p2.className = 'task_content';
+        p2.innerHTML = content;
+        aTask.appendChild(p1);
+        aTask.appendChild(p2);
+        liTask.appendChild(aTask);
+
+        tasklist.appendChild(liTask);
+    }
 </script>
 
 
