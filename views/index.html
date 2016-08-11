@@ -1,8 +1,7 @@
-{% extends "layout.html" %}
-{% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %}
-{% block head %}
+{% extends "layout.html" %} {% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %} {% block head %}
 <style type="text/css">
-    html, body {
+    html,
+    body {
         width: 100%;
         height: 100%;
         margin: 0;
@@ -10,7 +9,7 @@
         overflow-x: hidden;
         background-color: #f0f0f0;
     }
-
+    
     header {
         text-align: center;
         height: 50px;
@@ -27,19 +26,24 @@
         transition: all 0.4s ease-out;
     }
 
+    a{
+        -webkit-tap-highlight-color: transparent;
+        outline:none;        
+    }
+    
     .headerHide {
         top: -50px;
         box-shadow: none;
     }
-
+    
     .headerShow {
         top: 0
     }
-
+    
     .tasklist {
         padding-left: 0
     }
-
+    
     .tasklist > li {
         list-style: none;
         background-color: #fff;
@@ -48,7 +52,7 @@
         padding: 7px 17px 12px;
         border-bottom: 2px solid #dedede;
     }
-
+    
     #searchBar {
         width: 96%;
         height: 76%;
@@ -62,52 +66,52 @@
         background-color: #5fb8ff;
         background-position: -421px 7px;
     }
-
+    
     .searchicon {
         position: absolute;
         left: 20px;
         width: 23px;
     }
-
+    
     input::-webkit-input-placeholder {
         color: #fff !important;
     }
-
+    
     input:-moz-placeholder {
         color: #fff !important;
     }
-
+    
     input::-moz-placeholder {
         color: #fff !important;
     }
-
+    
     input:-ms-input-placeholder {
         color: #fff !important;
     }
-
+    
     .task_header {
         font-size: 23px;
         margin: 12px 0 12px;
     }
-
+    
     .tasklist > li > a {
         width: 100%;
         text-decoration: none;
         color: #000;
         display: inline-block;
     }
-
+    
     .task_content {
         word-break: break-all;
         text-indent: 2em;
     }
-
+    
     .bar {
         width: 100%;
         height: 100%;
         display: block;
     }
-
+    
     footer {
         position: fixed;
         margin-top: -40px;
@@ -118,7 +122,7 @@
         text-align: center;
         transition: all 0.4s ease-out;
     }
-
+    
     footer > ul {
         list-style: none;
         padding: 0;
@@ -127,7 +131,7 @@
         height: 100%;
         margin: 0;
     }
-
+    
     footer > ul > li {
         float: left;
         width: 25%;
@@ -135,9 +139,8 @@
         height: 100%;
         padding: 0;
         background-position: 50% 50%;
-
     }
-
+    
     footer > ul > li > a {
         display: inline-block;
         width: 40px;
@@ -149,48 +152,48 @@
         transition: all .3s;
         overflow: hidden;
     }
-
     /*在pistion-x上相距48px*/
+    
     .bar_action {
         background-position: 4px 10px;
     }
-
+    
     .bar_action.active {
         background-position: -44px 10px;
     }
-
+    
     .bar_wait {
         background-position: -92px 10px;
     }
-
+    
     .bar_wait.active {
         background-position: -140px 10px;
     }
-
+    
     .bar_done {
         background-position: -189px 10px;
     }
-
+    
     .bar_done.active {
         background-position: -237px 10px;
     }
-
+    
     .bar_more {
         background-position: -331px 10px;
     }
-
+    
     .bar_more.active {
         background-position: -379px 10px
     }
-
+    
     .footerHide {
         bottom: -50px;
     }
-
+    
     .footerShow {
         bottom: 0;
     }
-
+    
     .colorfulEags {
         text-align: center;
         width: 100%;
@@ -199,7 +202,7 @@
         color: #5a6a7a;
         margin-bottom: 10px;
     }
-
+    
     .btnEdit {
         position: fixed;
         bottom: 100px;
@@ -222,16 +225,17 @@
         background-color: #2196F3;
         transition: all .4s ease-out;
         outline: none;
+        -webkit-tap-highlight-color: transparent;
     }
-
+    
     .btnEditHide {
         bottom: -70px;
     }
-
+    
     .btnEditShow {
         bottom: 100px;
     }
-
+    
     .mask {
         position: absolute;
         top: 50px;
@@ -244,35 +248,42 @@
         visibility: hidden;
     }
 </style>
-<script type="text/javascript" src="/js/socket.io.js"></script>
-{% endblock %}
-{% block content %}
+<script type="text/javascript" src="/js/socket.io.js"></script> {% endblock %} {% block content %}
 
 <header><input type="search" id="searchBar" placeholder="搜索">
 </header>
 <section style="margin-top: 60px;">
     <ul class="tasklist">
-        {% if json.state=='ok' %}
-        {% asyncEach item in json.reminders %}
-        <li><a href="/reminder/{{ item.shortid }}">
-            <p class="task_header">{{ item.data.title }}</p>
-            <p class="task_content">{{ item.data.content }}</p>
-        </a>
+        {% if json.state=='ok' %} {% asyncEach item in json.reminders %}
+        <li>
+            <a href="/reminder/{{ item.shortid }}">
+                <p class="task_header">{{ item.data.title }}</p>
+                <p class="task_content">{{ item.data.content }}</p>
+            </a>
         </li>
-        {% endeach %}
-        {% else %}
-        <li><p style="opacity:0.5">{{ json.detail }}
-            <p></li>
+        {% endeach %} {% else %}
+        <li>
+            <p style="opacity:0.5">{{ json.detail }}
+                <p>
+        </li>
         {% endif %}
     </ul>
 </section>
 <a class="btnEdit" id="btnEdit"></a>
 <footer>
     <ul>
-        <li><a class="bar_action{% if nav=='action' %} active{% endif %}" href="/reminder/list/action"></a></li>
-        <li><a class="bar_wait{% if nav=='wait' %} active{% endif %}" href="/reminder/list/wait"></a></li>
-        <li><a class="bar_done{% if nav=='done' %} active{% endif %}" href="/reminder/list/done"></a></li>
-        <li><a class="bar_more{% if nav=='more' %} active{% endif %}" href="#"></a></li>
+        <li>
+            <a class="bar_action{% if nav=='action' %} active{% endif %}" href="/reminder/list/action"></a>
+        </li>
+        <li>
+            <a class="bar_wait{% if nav=='wait' %} active{% endif %}" href="/reminder/list/wait"></a>
+        </li>
+        <li>
+            <a class="bar_done{% if nav=='done' %} active{% endif %}" href="/reminder/list/done"></a>
+        </li>
+        <li>
+            <a class="bar_more{% if nav=='more' %} active{% endif %}" href="#"></a>
+        </li>
     </ul>
 </footer>
 
@@ -282,7 +293,8 @@
     document.body.appendChild(mask);
     var searchBar = document.getElementById('searchBar');
     searchBar.addEventListener('focus', function () {
-        mask.style.visibility = 'visible'
+        mask.style.visibility = 'visible';
+        searchBar.select&&searchBar.select();
     });
     searchBar.addEventListener('blur', function () {
         mask.style.visibility = 'hidden';
@@ -348,7 +360,4 @@
 
         tasklist.appendChild(liTask);
     }
-</script>
-
-
-{% endblock %}
+</script> {% endblock %}
