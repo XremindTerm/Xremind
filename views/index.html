@@ -1,105 +1,363 @@
-{% extends "layout.html" %}
- {% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %}
-{% block head %}
-    <style type="text/css">
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        header {
-            text-align: center;
-            height: 50px;
-            width: 100%;
-            background-color: #009688;
-            color: #fff;
-            -webkit-box-shadow: 2px 2px 10px #ddd;
-            -moz-box-shadow: 2px 2px 10px #ddd;
-            box-shadow: 0 6px 16px #e0e0e0;
-            line-height: 50px;
-            display: flex;
-            align-items: center;
-        }
-        .tasklist {
-            padding-left: 0
-        }
-        .tasklist > li {
-            list-style: none;
-            background-color: #fff;
-            margin: 8px 0 8px;
-            color: #424242;
-            /* border-radius: 4px; */
-            padding: 7px 17px 12px;
-            border-bottom: 2px solid #dedede;
-        }
-        #searchBar {
-            width: 96%;
-            height: 76%;
-            background-color: #22ada0;
-            color: #fff;
-            font-size: 18px;
-            padding: 0 8px 0 49px;
-            outline: none;
-            border: none;
-            margin: 0 auto;
-        }
-        .searchicon {
-            position: absolute;
-            left: 20px;
-            width: 23px;
-        }
-        input::-webkit-input-placeholder {
-            color: #fff !important;
-        }
-        input:-moz-placeholder {
-            color: #fff !important;
-        }
-        input::-moz-placeholder {
-            color: #fff !important;
-        }
-        input:-ms-input-placeholder {
-            color: #fff !important;
-        }
-        .task_header {
-            font-size: 23px;
-            padding-left: 32px;
-            margin: 12px 0 12px;
-        }
-        .task_content {
-            text-indent: 2em;
-        }
-    </style>
-{% endblock %}
-{% block content%}
+{% extends "layout.html" %} {% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %} {% block head %}
+<style type="text/css">
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: #f0f0f0;
+    }
+    
+    header {
+        text-align: center;
+        height: 50px;
+        width: 100%;
+        background-color: #2196F3;
+        color: #fff;
+        -webkit-box-shadow: 2px 2px 10px #ddd;
+        -moz-box-shadow: 2px 2px 10px #ddd;
+        box-shadow: 0 6px 16px #e0e0e0;
+        line-height: 50px;
+        display: flex;
+        align-items: center;
+        position: fixed;
+        transition: all 0.4s ease-out;
+    }
 
-<header><img src="/img/search.svg" class="searchicon" alt="">    <input type="search" id="searchBar" placeholder="搜索"></header>
-<section class="warp">
+    a{
+        -webkit-tap-highlight-color: transparent;
+        outline:none;        
+    }
+    
+    .headerHide {
+        top: -50px;
+        box-shadow: none;
+    }
+    
+    .headerShow {
+        top: 0
+    }
+    
+    .tasklist {
+        padding-left: 0
+    }
+    
+    .tasklist > li {
+        list-style: none;
+        background-color: #fff;
+        margin: 8px 0 8px;
+        color: #424242;
+        padding: 7px 17px 12px;
+        border-bottom: 2px solid #dedede;
+    }
+    
+    #searchBar {
+        width: 96%;
+        height: 76%;
+        color: #fff;
+        font-size: 18px;
+        padding: 0 8px 0 49px;
+        outline: none;
+        border: none;
+        margin: 0 auto;
+        background: url('/img/sprite.svg') no-repeat;
+        background-color: #5fb8ff;
+        background-position: -421px 7px;
+    }
+    
+    .searchicon {
+        position: absolute;
+        left: 20px;
+        width: 23px;
+    }
+    
+    input::-webkit-input-placeholder {
+        color: #fff !important;
+    }
+    
+    input:-moz-placeholder {
+        color: #fff !important;
+    }
+    
+    input::-moz-placeholder {
+        color: #fff !important;
+    }
+    
+    input:-ms-input-placeholder {
+        color: #fff !important;
+    }
+    
+    .task_header {
+        font-size: 23px;
+        margin: 12px 0 12px;
+    }
+    
+    .tasklist > li > a {
+        width: 100%;
+        text-decoration: none;
+        color: #000;
+        display: inline-block;
+    }
+    
+    .task_content {
+        word-break: break-all;
+        text-indent: 2em;
+    }
+    
+    .bar {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    
+    footer {
+        position: fixed;
+        margin-top: -40px;
+        width: 100%;
+        bottom: 0;
+        height: 50px;
+        background-color: #fff;
+        text-align: center;
+        transition: all 0.4s ease-out;
+    }
+    
+    footer > ul {
+        list-style: none;
+        padding: 0;
+        width: 100%;
+        display: block;
+        height: 100%;
+        margin: 0;
+    }
+    
+    footer > ul > li {
+        float: left;
+        width: 25%;
+        margin: 0;
+        height: 100%;
+        padding: 0;
+        background-position: 50% 50%;
+    }
+    
+    footer > ul > li > a {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto;
+        padding: 5px 0 5px;
+        background-image: url("/img/sprite.svg");
+        background-repeat: no-repeat;
+        transition: all .3s;
+        overflow: hidden;
+    }
+    /*在pistion-x上相距48px*/
+    
+    .bar_action {
+        background-position: 4px 10px;
+    }
+    
+    .bar_action.active {
+        background-position: -44px 10px;
+    }
+    
+    .bar_wait {
+        background-position: -92px 10px;
+    }
+    
+    .bar_wait.active {
+        background-position: -140px 10px;
+    }
+    
+    .bar_done {
+        background-position: -189px 10px;
+    }
+    
+    .bar_done.active {
+        background-position: -237px 10px;
+    }
+    
+    .bar_more {
+        background-position: -331px 10px;
+    }
+    
+    .bar_more.active {
+        background-position: -379px 10px
+    }
+    
+    .footerHide {
+        bottom: -50px;
+    }
+    
+    .footerShow {
+        bottom: 0;
+    }
+    
+    .colorfulEags {
+        text-align: center;
+        width: 100%;
+        margin: 0;
+        font-size: 14px;
+        color: #5a6a7a;
+        margin-bottom: 10px;
+    }
+    
+    .btnEdit {
+        position: fixed;
+        bottom: 100px;
+        cursor: pointer;
+        right: 36px;
+        border: none;
+        box-shadow: 2px 2px 18px #949494;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 60px;
+        height: 60px;
+        background-color: #2196F3;
+        display: inline-block;
+        border-radius: 30px;
+        line-height: 70px;
+        text-align: center;
+        background: url('/img/sprite.svg') no-repeat;
+        background-position: -271px 15px;
+        background-color: #2196F3;
+        transition: all .4s ease-out;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .btnEditHide {
+        bottom: -70px;
+    }
+    
+    .btnEditShow {
+        bottom: 100px;
+    }
+    
+    .mask {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.2;
+        background: black;
+        z-index: 99;
+        visibility: hidden;
+    }
+</style>
+<script type="text/javascript" src="/js/socket.io.js"></script> {% endblock %} {% block content %}
+
+<header><input type="search" id="searchBar" placeholder="搜索">
+</header>
+<section style="margin-top: 60px;">
     <ul class="tasklist">
-        <li>            <p class="task_header">默写单词</p>
-            <p class="task_content">
-                细细整理了过去接触过的那些前端技术，发现前端演进是段特别有意思的历史。人们总是在过去就做出未来需要的框架，而现在流行的是过去的过去发明过的。如，响应式设计不得不提到的一个缺点是：他只是将原本在模板层做的事，放到了样式（CSS）层来完成。
-            </p>
+        {% if json.state=='ok' %} {% asyncEach item in json.reminders %}
+        <li>
+            <a href="/reminder/{{ item.shortid }}">
+                <p class="task_header">{{ item.data.title }}</p>
+                <p class="task_content">{{ item.data.content }}</p>
+            </a>
+        </li>
+        {% endeach %} {% else %}
+        <li>
+            <p style="opacity:0.5">{{ json.detail }}
+                <p>
+        </li>
+        {% endif %}
+    </ul>
+</section>
+<a class="btnEdit" id="btnEdit"></a>
+<footer>
+    <ul>
+        <li>
+            <a class="bar_action{% if nav=='action' %} active{% endif %}" href="/reminder/list/action"></a>
         </li>
         <li>
-            <p class="task_header">前端演进史</p>
-            <p class="task_content">
-                如果六、七年前的移动网络速度和今天一样快，那么直接上的技术就是响应式设计，APP、SPA就不会流行得这么快。尽管我们可以预见未来这些领域会变得更好，但是更需要的是改变现状。改变现状的同时也需要预见未来的需求。
-            </p>
+            <a class="bar_wait{% if nav=='wait' %} active{% endif %}" href="/reminder/list/wait"></a>
         </li>
         <li>
-            <p class="task_header">什么是前端？</p>
-            <p class="task_content">维基百科是这样说的：前端Front-end和后端back-end是描述进程开始和结束的通用词汇。前端作用于采集输入信息，后端进行处理。计算机程序的界面样式，视觉呈现属于前端。
-                这种说法给人一种很模糊的感觉，但是他说得又很对，它负责视觉展示。在MVC结构或者MVP中，负责视觉显示的部分只有View层，而今天大多数所谓的View层已经超越了View层。前端是一个很神奇的概念，但是而今的前端已经发生了很大的变化。<a href=""></a></p>
-        </li>        <li>
-            <p class="task_header"></p>
-            <p class="task_content"><a href=""></a></p>
-        </li>        <li>
-            <p class="task_header"></p>
-            <p class="task_content"><a href=""></a></p>
+            <a class="bar_done{% if nav=='done' %} active{% endif %}" href="/reminder/list/done"></a>
+        </li>
+        <li>
+            <a class="bar_more{% if nav=='more' %} active{% endif %}" href="#"></a>
         </li>
     </ul>
+</footer>
 
-</section>
-{% endblock %}
+<script type="text/javascript">
+    var mask = document.createElement('div');
+    mask.className = 'mask';
+    document.body.appendChild(mask);
+    var searchBar = document.getElementById('searchBar');
+    searchBar.addEventListener('focus', function () {
+        mask.style.visibility = 'visible';
+        searchBar.select&&searchBar.select();
+    });
+    searchBar.addEventListener('blur', function () {
+        mask.style.visibility = 'hidden';
+    });
+    var btnEdit = document.getElementById('btnEdit');
+    var footer = document.getElementsByTagName('footer')[0];
+    var header = document.getElementsByTagName('header')[0];
+    var scrollFunc = function (e) {
+        var direct = 0;
+        e = e || window.event;
+        if (e.wheelDelta) {
+            if (e.wheelDelta > 0) {
+                footer.className = 'footerShow';
+                header.className = 'headerShow';
+                btnEdit.className = 'btnEdit btnEditHide';
+                btnEdit.className = 'btnEdit btnEditShow';
+            }
+            if (e.wheelDelta < 0) {
+                footer.className = 'footerHide';
+                header.className = 'headerHide';
+                btnEdit.className = 'btnEdit btnEditHide';
+            }
+        }
+    };
+    //滚动滑轮触发scrollFunc方法
+    window.onmousewheel = scrollFunc;
+    btnEdit.addEventListener('click', function () {
+        location.href = '/reminder/add';
+    });
+
+
+    var socket = io();
+    var nickname = 'sfsm';
+    var cookie = document.cookie;
+    var arrCookie = cookie.split(';');
+    for (var i = 0; i < arrCookie.length; i++) {
+        var arr = arrCookie[i].split('=');
+        if (arr[0] == 'nickname') {
+            username = arr[1];
+            break;
+        }
+    }
+
+    socket.emit('init', {nickname: 'sfsm'});
+    socket.on('chatBack', function (msg) {
+        addList(msg.shortid, msg.title, msg.comtent)
+    });
+
+    function addList(id, title, content) {
+        var tasklist = document.getElementsByClassName('tasklist')[0];
+        var liTask = document.createElement('li');
+        var aTask = document.createElement('a');
+        aTask.setAttribute('herf', '/reminder/' + id);
+        var p1 = document.createElement('p');
+        p1.className = 'task_header';
+        p1.innerHTML = title;
+        var p2 = document.createElement('p');
+        p2.className = 'task_content';
+        p2.innerHTML = content;
+        aTask.appendChild(p1);
+        aTask.appendChild(p2);
+        liTask.appendChild(aTask);
+
+        tasklist.appendChild(liTask);
+    }
+</script> {% endblock %}

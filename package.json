@@ -15,6 +15,10 @@
     "morgan": "~1.7.0",
     "mysql": "^2.11.1",
     "nunjucks": "~2.4.2",
-    "serve-favicon": "~2.3.0"
+    "redis": "^2.6.2",
+    "serve-favicon": "~2.3.0",
+    "short-id": "0.1.0-1",
+    "socket.io": "^1.4.8",
+    "socket.io-client": "^1.4.8"
   }
 }
