@@ -3,26 +3,7 @@ var router = express.Router();
 var query = require('dao/dbPool');
 var Out = require('./out');
 var shortid = require('shortid');
-
-// //socket推送方式
-// //Sample
-// var socket = require('../node_modules/dao/push');
-// var userList = {
-//     //uid:[rid,]
-//     'sfsm': [12, 14, 15],
-//     'jack': [15, 18],
-//     'leo': [19, 20]
-// };
-// socket.push(userList, function (err, result) {
-//     if (err) {
-//         console.log(result);
-//     } else {
-//         //Succeed
-//         //return result model like userList
-//         //TODO
-//     }
-// });
-
+var socket = require('dao/push');
 
 var echoKeys = ['shortid', 'data', 'target', 'create', 'status'];
 
@@ -50,7 +31,7 @@ router.route('/add')
                     data: decodeURIComponent(req.body.data.trim()),
                     target: tD.getTime(),
                     interval: 1000 * 60 * 60 * 24,
-                    status: 'action',
+                    status: 'wait',
                     create: new Date().getTime()
                 };
                 query('insert into reminders set ?', data, function (err, vals) {
@@ -99,7 +80,6 @@ router.all('/list/:nav', function (req, res, next) {
                         obj[vals[i].shortid || i] = vals[i];
                     }
                 }
-                console.log(JSON.stringify(vals));
                 out.echo({ state: 'ok', detail: 'list reminder success', reminders: vals });
             } else {
                 out.echo({ state: 'err', detail: 'NOTE：暂无任务' });
@@ -133,34 +113,82 @@ var RPID = setInterval(function () {
     console.log('开始分析记忆任务');
     var nT = new Date().getTime();
     /*
-     逻辑分析：
-     if nT>=target and status="doing" then target+=interval
+     事件驱动逻辑分析：
+     [action]=>[wait]
+     @conditions:event 记住了
+     @modify:status=wait,target+=interval,reports status=ok
+     @conditions:event 需加强
+     @modify:status=wait,target+=interval,reports status=enhance
+     [action]=>[done]
+     @conditions:event 完成
+     @modify:status=done
+     [action]=>[delete]
+     @conditions:event 删除
+     @modify:delete thsi reminder
      */
-    var vaildCondition = " where `target`<=" + nT + " and `status`='doing'";
+
+    /**
+     * [action]=>[wait]
+     * @conditions:target-nT >=1000*60*60*12 && status=action //超时
+     * @modify:status=wait,target+=interval,reports status=undone
+     */
+    console.log('重置超时任务');    
+    var outTimeCondition = " where `target`-" + nT + ">=43200000 and `status`='action'";
+    query("update `reminders` set `status`='wait',`target`=`target`+`interval`" + outTimeCondition, function (err) {
+        if (err) {
+            console.log(err.stack || err);
+            return;
+        }
+        //因为reports的status默认为undone，所以无需操作
+    });
+
+    /**
+     * [wait]=>[action]
+     * @conditions:target<=nT && status=wait
+     * @modify:status=action,add into table `reports`
+     */
+    console.log('初始化新任务的报告');
+    var vaildCondition = " where `target`<=" + nT + " and `status`='wait'";
     //选出已经生效的提醒，创建对应的报告
-    query('insert into reports (`rid`,`uid`,`fulfill`)'
-        + ' select `id`,`uid`,"' + nT + '" from reminders' + vaildCondition
+    query("insert into reports (`rid`,`uid`,`fulfill`)"
+        + " select `id`,`uid`,'" + nT + "' from reminders" + vaildCondition
         , function (err) {
             if (err) {
                 console.log(err.stack || err);
                 return;
             }
-            console.log('创建对应的报告成功');
-            //推送已经生效的提醒
-            query('select ?? from reminders' + vaildCondition, [echoKeys], function (err, vals) {
+
+            //推送新任务的提醒
+            console.log('推送新任务的提醒');
+            query("select ?? from reminders" + vaildCondition,[echoKeys], function (err, vals) {
                 if (err) {
                     console.log(err.stack || err);
                     return;
                 }
-
-                /*推送Code*/
-                console.log('推送已经生效的提醒成功');
-
+                if(vals.length>0){//进行推送
+                    var pushList={};
+                    for(var i=0,l=vals.length;i<l;i++){
+                        if(pushList[vals[i].uid]){
+                            pushList[vals[i].uid].push(vals[i]);
+                        }else{
+                            pushList[vals[i].uid]=[vals[i]];
+                        }
+                    }
+                    socket.push(pushList, function (err, result) {
+                        if (err) {
+                            console.log(result);
+                        } else {
+                            //Succeed
+                            //return result model like userList
+                            //TODO
+                        }
+                    });
+                }
+                
                 //更新已经生效的提醒
-                query('update reminders set `target`=`target`+`interval`' + vaildCondition, function (err) {
+                console.log('激活新任务');
+                query("update reminders set `status`='action'" + vaildCondition, function (err) {
                     if (err) console.log(err.stack || err);
-                    console.log('更新已经生效的提醒成功');
-                    console.log('分析结束');
                 });
             });
         });
