@@ -58,10 +58,9 @@
         outline: none;
         border: none;
         margin: 0 auto;
-        background: url('/img/search.svg') no-repeat;
+        background: url('/img/sprite.svg') no-repeat;
         background-color: #5fb8ff;
-        background-size: 24px;
-        background-position: 15px 50%;
+        background-position: -421px 7px;
     }
 
     .searchicon {
@@ -136,46 +135,52 @@
         height: 100%;
         padding: 0;
         background-position: 50% 50%;
-        background-size: 32px;
-        background-repeat: no-repeat;
+
     }
 
     footer > ul > li > a {
         display: inline-block;
-        width: 100%;
-        height: 100%;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto;
+        padding: 5px 0 5px;
+        background-image: url("/img/sprite.svg");
+        background-repeat: no-repeat;
+        transition: all .3s;
+        overflow: hidden;
     }
 
+    /*在pistion-x上相距48px*/
     .bar_action {
-        background-image: url("/img/article0.svg");
+        background-position: 4px 10px;
     }
 
     .bar_action.active {
-        background-image: url("/img/article1.svg");
+        background-position: -44px 10px;
     }
 
     .bar_wait {
-        background-image: url("/img/clock0.svg");
+        background-position: -92px 10px;
     }
 
     .bar_wait.active {
-        background-image: url("/img/clock1.svg");
+        background-position: -140px 10px;
     }
 
     .bar_done {
-        background-image: url("/img/done0.svg");
+        background-position: -189px 10px;
     }
 
     .bar_done.active {
-        background-image: url("/img/done1.svg");
+        background-position: -237px 10px;
     }
 
     .bar_more {
-        background-image: url("/img/more0.svg");
+        background-position: -331px 10px;
     }
 
     .bar_more.active {
-        background-image: url("/img/more1.svg");
+        background-position: -379px 10px
     }
 
     .footerHide {
@@ -212,9 +217,8 @@
         border-radius: 30px;
         line-height: 70px;
         text-align: center;
-        background: url('/img/edit.png') no-repeat;
-        background-size: 40px;
-        background-position: 50% 50%;
+        background: url('/img/sprite.svg') no-repeat;
+        background-position: -271px 15px;
         background-color: #2196F3;
         transition: all .4s ease-out;
         outline: none;
@@ -265,10 +269,10 @@
 <a class="btnEdit" id="btnEdit"></a>
 <footer>
     <ul>
-        <li class="bar_action{% if nav=='action' %} active{% endif %}"><a href="/reminder/list/action"></a></li>
-        <li class="bar_wait{% if nav=='wait' %} active{% endif %}"><a href="/reminder/list/wait"></a></li>
-        <li class="bar_done{% if nav=='done' %} active{% endif %}"><a href="/reminder/list/done"></a></li>
-        <li class="bar_more"><a href="#"></a></li>
+        <li><a class="bar_action{% if nav=='action' %} active{% endif %}" href="/reminder/list/action"></a></li>
+        <li><a class="bar_wait{% if nav=='wait' %} active{% endif %}" href="/reminder/list/wait"></a></li>
+        <li><a class="bar_done{% if nav=='done' %} active{% endif %}" href="/reminder/list/done"></a></li>
+        <li><a class="bar_more{% if nav=='more' %} active{% endif %}" href="#"></a></li>
     </ul>
 </footer>
 
@@ -308,29 +312,6 @@
     btnEdit.addEventListener('click', function () {
         location.href = '/reminder/add';
     });
-
-    function postSomething(data) {
-        var xhr = new XMLHttpRequest();
-        if (xhr) {
-            // xhr.open([string]method,[string]url,[boolen optional]async,[string optional]user, [sting optional]password)
-            xhr.open('POST', '/reminder/test', true);
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.onreadystatechange = function () {
-                if ((xhr.readyState == 4) && (xhr.status == 200)) {
-                    //return xhr.responseText、xhr.responseType、xhr.responseXML
-                    console.log(xhr.responseText);
-
-                }
-                return true;
-            }
-        }
-        else {
-            return false;
-        }
-        xhr.send("data=" + data);
-        return true;
-    }
 
 
     var socket = io();
