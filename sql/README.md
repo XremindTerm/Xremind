@@ -26,7 +26,7 @@ status	|varchar(10)|标记记忆项目状态：wait(默认)\|action\|done
  *    @conditions:event 需加强
  *    @modify:status=wait,target+=interval,reports status=enhance
 
- *    @conditions:target-nT >=1000*60*60*12 && status=action //超时
+ *    @conditions:nT-target >=1000*60*60*12 && status=action //超时
  *    @modify:status=wait,target+=interval,reports status=undone
 
  *    [action]=>[done]

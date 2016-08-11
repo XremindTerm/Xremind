@@ -133,7 +133,7 @@ var RPID = setInterval(function () {
      * @modify:status=wait,target+=interval,reports status=undone
      */
     console.log('重置超时任务');    
-    var outTimeCondition = " where `target`-" + nT + ">=43200000 and `status`='action'";
+    var outTimeCondition = " where " + nT + "-`target`>=43200000 and `status`='action'";
     query("update `reminders` set `status`='wait',`target`=`target`+`interval`" + outTimeCondition, function (err) {
         if (err) {
             console.log(err.stack || err);
