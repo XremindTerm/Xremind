@@ -5,7 +5,7 @@ var Out = require('./out');
 var shortid = require('shortid');
 var socket = require('dao/push');
 
-var echoKeys = ['shortid', 'data', 'target', 'create', 'status'];
+var echoKeys = ['shortid', 'data', 'target', 'create', 'state'];
 
 // All reminders listening
 router.all('/', function (req, res, next) {
@@ -31,7 +31,7 @@ router.route('/add')
                     data: decodeURIComponent(req.body.data.trim()),
                     target: tD.getTime(),
                     interval: 1000 * 60 * 60 * 24,
-                    status: 'wait',
+                    state: 'wait',
                     create: new Date().getTime()
                 };
                 query('insert into reminders set ?', data, function (err, vals) {
@@ -65,7 +65,7 @@ router.all('/list/:nav', function (req, res, next) {
     var out = Out(req, res, 'index', {
         nav: nav
     });
-    query('select ?? from reminders where uid = ? and status = ?', [echoKeys, req.session.userinfo.id, nav], function (err, vals) {
+    query('select ?? from reminders where uid = ? and state = ?', [echoKeys, req.session.userinfo.id, nav], function (err, vals) {
         if (err) {
             out.echo({ state: 'err', detail: err });
         } else {
@@ -86,6 +86,76 @@ router.all('/list/:nav', function (req, res, next) {
             }
         }
     });
+});
+
+router.all('/:shortid/:opt', function (req, res, next) {
+    var out = Out(req, res, 'edit');
+    switch (req.params.opt) {
+        case 'delete':
+            query('delete from reminders where uid = ?  and shortid= ? limit 1'
+                , [req.session.userinfo.id, req.params.shortid]
+                , function (err) {
+                    if (err) {
+                        out.echo({ state: 'err', detail: err });
+                        console.log(err);
+                    } else {
+                        res.redirect('/reminder/list/action');
+                    }
+                });
+            break;
+        case 'done':
+            query('update reminders set state = "done" where uid = ? and shortid = ? limit 1'
+                , [req.session.userinfo.id, req.params.shortid]
+                , function (err) {
+                    if (err) {
+                        out.echo({ state: 'err', detail: err });
+                    } else {
+                        res.redirect('/reminder/' + req.params.shortid);
+                    }
+                });
+            break;
+        case 'remember':
+            query('update reports set state = "remember" where uid = ?  and rshortid= ? limit 1'
+                , [req.session.userinfo.id, req.params.shortid]
+                , function (err) {
+                    if (err) {
+                        out.echo({ state: 'err', detail: err });
+                    } else {
+                        query('update reminders set state = "wait",`target`=`target`+`interval` where uid = ? and shortid = ? limit 1'
+                            , [req.session.userinfo.id, req.params.shortid]
+                            , function (err) {
+                                if (err) {
+                                    out.echo({ state: 'err', detail: err });
+                                } else {
+                                    res.redirect('/reminder/' + req.params.shortid);
+                                }
+                            });
+                    }
+                });
+            break;
+        case 'enhance':
+            query('update reports set state = "enhance" where uid = ?  and rshortid= ? limit 1'
+                , [req.session.userinfo.id, req.params.shortid]
+                , function (err) {
+                    if (err) {
+                        out.echo({ state: 'err', detail: err });
+                    } else {
+                        query('update reminders set state = "wait",`target`=`target`+`interval` where uid = ? and shortid = ? limit 1'
+                            , [req.session.userinfo.id, req.params.shortid]
+                            , function (err) {
+                                if (err) {
+                                    out.echo({ state: 'err', detail: err });
+                                } else {
+                                    res.redirect('/reminder/' + req.params.shortid);
+                                }
+                            });
+                    }
+                });
+            break;
+        default:
+            res.redirect('/reminder/' + req.params.shortid);
+            break;
+    }
 });
 
 router.all('/:shortid', function (req, res, next) {
@@ -116,12 +186,12 @@ var RPID = setInterval(function () {
      事件驱动逻辑分析：
      [action]=>[wait]
      @conditions:event 记住了
-     @modify:status=wait,target+=interval,reports status=ok
+     @modify:state=wait,target+=interval,reports state=ok
      @conditions:event 需加强
-     @modify:status=wait,target+=interval,reports status=enhance
+     @modify:state=wait,target+=interval,reports state=enhance
      [action]=>[done]
      @conditions:event 完成
-     @modify:status=done
+     @modify:state=done
      [action]=>[delete]
      @conditions:event 删除
      @modify:delete thsi reminder
@@ -129,26 +199,26 @@ var RPID = setInterval(function () {
 
     /**
      * [action]=>[wait]
-     * @conditions:target-nT >=1000*60*60*12 && status=action //超时
-     * @modify:status=wait,target+=interval,reports status=undone
+     * @conditions:target-nT >=1000*60*60*12 && state=action //超时
+     * @modify:state=wait,target+=interval,reports state=undone
      */
-    console.log('重置超时任务');    
-    var outTimeCondition = " where " + nT + "-`target`>=43200000 and `status`='action'";
-    query("update `reminders` set `status`='wait',`target`=`target`+`interval`" + outTimeCondition, function (err) {
+    console.log('重置超时任务');
+    var outTimeCondition = " where " + nT + "-`target`>=43200000 and `state`='action'";
+    query("update `reminders` set `state`='wait',`target`=`target`+`interval`" + outTimeCondition, function (err) {
         if (err) {
             console.log(err.stack || err);
             return;
         }
-        //因为reports的status默认为undone，所以无需操作
+        //因为reports的state默认为undone，所以无需操作
     });
 
     /**
      * [wait]=>[action]
-     * @conditions:target<=nT && status=wait
-     * @modify:status=action,add into table `reports`
+     * @conditions:target<=nT && state=wait
+     * @modify:state=action,add into table `reports`
      */
     console.log('初始化新任务的报告');
-    var vaildCondition = " where `target`<=" + nT + " and `status`='wait'";
+    var vaildCondition = " where `target`<=" + nT + " and `state`='wait'";
     //选出已经生效的提醒，创建对应的报告
     query("insert into reports (`rid`,`uid`,`fulfill`)"
         + " select `id`,`uid`,'" + nT + "' from reminders" + vaildCondition
@@ -160,18 +230,18 @@ var RPID = setInterval(function () {
 
             //推送新任务的提醒
             console.log('推送新任务的提醒');
-            query("select ?? from reminders" + vaildCondition,[echoKeys], function (err, vals) {
+            query("select ?? from reminders" + vaildCondition, [echoKeys], function (err, vals) {
                 if (err) {
                     console.log(err.stack || err);
                     return;
                 }
-                if(vals.length>0){//进行推送
-                    var pushList={};
-                    for(var i=0,l=vals.length;i<l;i++){
-                        if(pushList[vals[i].uid]){
+                if (vals.length > 0) {//进行推送
+                    var pushList = {};
+                    for (var i = 0, l = vals.length; i < l; i++) {
+                        if (pushList[vals[i].uid]) {
                             pushList[vals[i].uid].push(vals[i]);
-                        }else{
-                            pushList[vals[i].uid]=[vals[i]];
+                        } else {
+                            pushList[vals[i].uid] = [vals[i]];
                         }
                     }
                     socket.push(pushList, function (err, result) {
@@ -184,10 +254,10 @@ var RPID = setInterval(function () {
                         }
                     });
                 }
-                
+
                 //更新已经生效的提醒
                 console.log('激活新任务');
-                query("update reminders set `status`='action'" + vaildCondition, function (err) {
+                query("update reminders set `state`='action'" + vaildCondition, function (err) {
                     if (err) console.log(err.stack || err);
                 });
             });

@@ -9,29 +9,29 @@ data	|text		|存放记忆项目的参数(JSON格式)
 target	|varchar(15)|下次提醒时间戳
 create  |varchar(15)|项目建立时间戳
 interval|varchar(15)|下次提醒间隔
-status	|varchar(10)|标记记忆项目状态：wait(默认)\|action\|done
+state	|varchar(10)|标记记忆项目状态：wait(默认)\|action\|done
 
 ```javascript  
 /**
  *
  * 逻辑分析：
  *    [wait]=>[action]
- *    @conditions:target<=nT && status=wait
- *    @modify:status=action,add into table `reports`
+ *    @conditions:target<=nT && state=wait
+ *    @modify:state=action,add into table `reports`
 
  *    [action]=>[wait]
  *    @conditions:event 记住了
- *    @modify:status=wait,target+=interval,reports status=ok
+ *    @modify:state=wait,target+=interval,reports state=remember
 
  *    @conditions:event 需加强
- *    @modify:status=wait,target+=interval,reports status=enhance
+ *    @modify:state=wait,target+=interval,reports state=enhance
 
- *    @conditions:nT-target >=1000*60*60*12 && status=action //超时
- *    @modify:status=wait,target+=interval,reports status=undone
+ *    @conditions:nT-target >=1000*60*60*12 && state=action //超时
+ *    @modify:state=wait,target+=interval,reports state=undone
 
  *    [action]=>[done]
  *    @conditions:event 完成
- *    @modify:status=done
+ *    @modify:state=done
  
  *    [action]=>[delete]
  *    @conditions:event 删除
