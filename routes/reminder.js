@@ -220,8 +220,8 @@ var RPID = setInterval(function () {
     console.log('初始化新任务的报告');
     var vaildCondition = " where `target`<=" + nT + " and `state`='wait'";
     //选出已经生效的提醒，创建对应的报告
-    query("insert into reports (`rid`,`uid`,`fulfill`)"
-        + " select `id`,`uid`,'" + nT + "' from reminders" + vaildCondition
+    query("insert into reports (`rid`,`rshortid`,`uid`,`fulfill`)"
+        + " select `id`,`shortid`,`uid`,'" + nT + "' from reminders" + vaildCondition
         , function (err) {
             if (err) {
                 console.log(err.stack || err);
