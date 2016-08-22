@@ -1,8 +1,8 @@
-{% extends "layout.html" %}
-{% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %}
-{% block head %}
+{% extends "layout.html" %} {% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %} {% block head %}
+
 <style type="text/css">
-    html, body {
+    html,
+    body {
         width: 100%;
         height: 100%;
         margin: 0;
@@ -25,6 +25,11 @@
         align-items: center;
         position: fixed;
         transition: all 0.4s ease-out;
+    }
+
+    a {
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
     }
 
     .headerHide {
@@ -135,7 +140,6 @@
         height: 100%;
         padding: 0;
         background-position: 50% 50%;
-
     }
 
     footer > ul > li > a {
@@ -151,6 +155,7 @@
     }
 
     /*在pistion-x上相距48px*/
+
     .bar_action {
         background-position: 4px 10px;
     }
@@ -222,6 +227,7 @@
         background-color: #2196F3;
         transition: all .4s ease-out;
         outline: none;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .btnEditHide {
@@ -244,111 +250,200 @@
         visibility: hidden;
     }
 </style>
-<script type="text/javascript" src="/js/socket.io.js"></script>
-{% endblock %}
-{% block content %}
 
+<script type="text/javascript" src="/js/socket.io.js"></script> {% endblock %} {% block content %}
 <header><input type="search" id="searchBar" placeholder="搜索">
 </header>
 <section style="margin-top: 60px;">
     <ul class="tasklist">
-        {% if json.state=='ok' %}
-        {% asyncEach item in json.reminders %}
-        <li><a href="/reminder/{{ item.shortid }}">
-            <p class="task_header">{{ item.data.title }}</p>
-            <p class="task_content">{{ item.data.content }}</p>
-        </a>
+        {% if json.state=='ok' %} {% asyncEach item in json.reminders %}
+        <li>
+            <a href="/reminder/{{ item.shortid }}">
+                <p class="task_header">{{ item.data.title }}</p>
+                <p class="task_content">{{ item.data.content }}</p>
+            </a>
         </li>
-        {% endeach %}
-        {% else %}
-        <li><p style="opacity:0.5">{{ json.detail }}
-            <p></li>
+        {% endeach %} {% else %}
+        <li>
+            <p style="opacity:0.5">{{ json.detail }}
+            <p>
+        </li>
         {% endif %}
     </ul>
 </section>
 <a class="btnEdit" id="btnEdit"></a>
 <footer>
     <ul>
-        <li><a class="bar_action{% if nav=='action' %} active{% endif %}" href="/reminder/list/action"></a></li>
-        <li><a class="bar_wait{% if nav=='wait' %} active{% endif %}" href="/reminder/list/wait"></a></li>
-        <li><a class="bar_done{% if nav=='done' %} active{% endif %}" href="/reminder/list/done"></a></li>
-        <li><a class="bar_more{% if nav=='more' %} active{% endif %}" href="#"></a></li>
+        <li>
+            <a class="bar_action{% if nav=='action' %} active{% endif %}" href="/reminder/list/action"></a>
+        </li>
+        <li>
+            <a class="bar_wait{% if nav=='wait' %} active{% endif %}" href="/reminder/list/wait"></a>
+        </li>
+        <li>
+            <a class="bar_done{% if nav=='done' %} active{% endif %}" href="/reminder/list/done"></a>
+        </li>
+        <li>
+            <a class="bar_more{% if nav=='more' %} active{% endif %}" href="#"></a>
+        </li>
     </ul>
 </footer>
 
+<div class="mask"></div>
 <script type="text/javascript">
-    var mask = document.createElement('div');
-    mask.className = 'mask';
-    document.body.appendChild(mask);
-    var searchBar = document.getElementById('searchBar');
-    searchBar.addEventListener('focus', function () {
-        mask.style.visibility = 'visible'
-    });
-    searchBar.addEventListener('blur', function () {
-        mask.style.visibility = 'hidden';
-    });
-    var btnEdit = document.getElementById('btnEdit');
-    var footer = document.getElementsByTagName('footer')[0];
-    var header = document.getElementsByTagName('header')[0];
-    var scrollFunc = function (e) {
-        var direct = 0;
-        e = e || window.event;
-        if (e.wheelDelta) {
-            if (e.wheelDelta > 0) {
-                footer.className = 'footerShow';
-                header.className = 'headerShow';
-                btnEdit.className = 'btnEdit btnEditHide';
-                btnEdit.className = 'btnEdit btnEditShow';
+    (function (doc, win, io) {
+        var btnEdit = doc.getElementById('btnEdit'),
+                footer = doc.getElementsByTagName('footer')[0],
+                header = doc.getElementsByTagName('header')[0],
+                mask = doc.getElementsByClassName('mask')[0],
+                searchBar = doc.getElementById('searchBar');
+
+        searchBar.addEventListener('focus', function () {
+            mask.style.visibility = 'visible';
+            searchBar.select && searchBar.select();
+        });
+        searchBar.addEventListener('blur', function () {
+            mask.style.visibility = 'hidden';
+        });
+
+        //建立socket连接
+        var socket = io;
+
+        //监听事件
+        socket.on('chatBack', function (msg) {
+            addList(msg.shortid, msg.title, msg.comtent)
+        });
+
+        //socket回传消息
+        //TODO 待测试
+        function addList(id, title, content) {
+            var tasklist = doc.getElementsByClassName('tasklist')[0];
+            var liTask = doc.createElement('li');
+            var aTask = doc.createElement('a');
+            aTask.setAttribute('herf', '/reminder/' + id);
+            var p1 = doc.createElement('p');
+            p1.className = 'task_header';
+            p1.innerHTML = title;
+            var p2 = doc.createElement('p');
+            p2.className = 'task_content';
+            p2.innerHTML = content;
+            aTask.appendChild(p1);
+            aTask.appendChild(p2);
+
+            liTask.appendChild(aTask);
+            tasklist.appendChild(liTask);
+        }
+
+        //导航栏显示
+        function tipShow() {
+            footer.className = 'footerShow';
+            header.className = 'headerShow';
+            btnEdit.className = 'btnEdit btnEditHide';
+            btnEdit.className = 'btnEdit btnEditShow';
+        }
+
+        //导航栏隐藏
+        function tipHide() {
+            footer.className = 'footerHide';
+            header.className = 'headerHide';
+            btnEdit.className = 'btnEdit btnEditHide';
+        }
+
+        //鼠标滚动或页面滑动事件绑定
+        //全局变量，触摸开始位置
+        var startX = 0, startY = 0;
+        var scrollFunc = function (e) {
+            var direct = 0;
+            e = e || win.event;
+            if (e.wheelDelta) {
+                direct = e.wheelDelta > 0 ? 1 : -1;
+            } else if (e.detail) {
+                direct = e.detail < 0 ? 1 : -1;
             }
-            if (e.wheelDelta < 0) {
-                footer.className = 'footerHide';
-                header.className = 'headerHide';
-                btnEdit.className = 'btnEdit btnEditHide';
+            isShow(direct);
+        }
+
+        function isShow(direct) {
+            if (direct == 1) {
+                //向上显示
+                tipShow();
+            } else {
+                //向下隐藏
+                tipHide();
             }
         }
-    };
-    //滚动滑轮触发scrollFunc方法
-    window.onmousewheel = scrollFunc;
-    btnEdit.addEventListener('click', function () {
-        location.href = '/reminder/add';
-    });
 
-
-    var socket = io();
-    var nickname = 'sfsm';
-    var cookie = document.cookie;
-    var arrCookie = cookie.split(';');
-    for (var i = 0; i < arrCookie.length; i++) {
-        var arr = arrCookie[i].split('=');
-        if (arr[0] == 'nickname') {
-            username = arr[1];
-            break;
+        //touchstart事件
+        function touchSatrtFunc(evt) {
+            try {
+                var touch = evt.touches[0]; //获取第一个触点
+                var x = Number(touch.pageX); //页面触点X坐标
+                var y = Number(touch.pageY); //页面触点Y坐标
+                //记录触点初始位置
+                startX = x;
+                startY = y;
+            }
+            catch (e) {
+                alert('touchSatrtFunc：' + e.message);
+            }
         }
-    }
 
-    socket.emit('init', {nickname: 'sfsm'});
-    socket.on('chatBack', function (msg) {
-        addList(msg.shortid, msg.title, msg.comtent)
-    });
+        //touchmove事件，这个事件无法获取坐标
+        function touchMoveFunc(evt) {
+            try {
+                //evt.preventDefault(); //阻止触摸时浏览器的缩放、滚动条滚动等
+                var touch = evt.touches[0]; //获取第一个触点
+                var x = Number(touch.pageX); //页面触点X坐标
+                var y = Number(touch.pageY); //页面触点Y坐标
+                if (y - startY > 0) {
+                    //向下滑
+                    tipShow();
+                } else {
+                    //向上滑
+                    tipHide();
+                }
+            }
+            catch (e) {
+                alert('touchMoveFunc：' + e.message);
+            }
+        }
 
-    function addList(id, title, content) {
-        var tasklist = document.getElementsByClassName('tasklist')[0];
-        var liTask = document.createElement('li');
-        var aTask = document.createElement('a');
-        aTask.setAttribute('herf', '/reminder/' + id);
-        var p1 = document.createElement('p');
-        p1.className = 'task_header';
-        p1.innerHTML = title;
-        var p2 = document.createElement('p');
-        p2.className = 'task_content';
-        p2.innerHTML = content;
-        aTask.appendChild(p1);
-        aTask.appendChild(p2);
-        liTask.appendChild(aTask);
+        //绑定事件
+        function bindEvent() {
+            doc.addEventListener('touchstart', touchSatrtFunc, false);
+            doc.addEventListener('touchmove', touchMoveFunc, false);
+        }
 
-        tasklist.appendChild(liTask);
-    }
-</script>
+        //判断是否支持触摸事件
+        function isTouchDevice() {
+            try {
+                doc.createEvent("TouchEvent");
+                bindEvent(); //绑定事件
+                win.onmousewheel = doc.onmousewheel = scrollFunc;//同时绑定鼠标滚轮事件
+            }
+            catch (e) {
+                //不支持TouchEvent事件！
+                if (doc.addEventListener) {
+                    doc.addEventListener('DOMMouseScroll', scrollFunc, false);
+                }
+                win.onmousewheel = doc.onmousewheel = scrollFunc;
+            }
+        }
 
+        //页面载入事件，可多次调用
+        function addLoadEvent(func) {
+            var oldonload = win.onload;
+            if (typeof win.onload != 'function') {
+                win.onload = func;
+            } else {
+                win.onload = function () {
+                    oldonload();
+                    c();
+                }
+            }
+        }
 
-{% endblock %}
+        //建立载入事件
+        addLoadEvent(isTouchDevice);
+    }(document, window, io()));
+</script> {% endblock %}

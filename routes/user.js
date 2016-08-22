@@ -39,22 +39,22 @@ router.route('/login')
         }
     })
     .post(function(req,res,next){
+        var out=Out(req,res,'auth',{
+            form:{
+                action:'/user/login',
+                nickname:req.body.nickname,
+                img:'/img/default.png',
+                submit:'Go'
+            },
+            aLink:{
+                text:'注册',
+                href:'register'
+            }
+        });
         if(req.body.nickname&&req.body.nickname.length>=4
             &&req.body.password&&req.body.password.length>=4){
             query('select * from users where nickname = ? limit 1'
                 ,[req.body.nickname],function(err,vals){
-                    var out=Out(req,res,'auth',{
-                        form:{
-                            action:'/user/login',
-                            nickname:req.body.nickname,
-                            img:'/img/default.png',
-                            submit:'Go'
-                        },
-                        aLink:{
-                            text:'注册',
-                            href:'register'
-                        }
-                    });
                     if(err){
                         out.echo({state:'err',detail:err});
                     }else{
