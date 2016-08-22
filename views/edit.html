@@ -3,7 +3,7 @@
     * {
         background-color: transparent;
     }
-    
+
     html,
     body {
         padding: 0;
@@ -11,13 +11,13 @@
         font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
         overflow-x: hidden;
     }
-    
+
     .editList {
         list-style: none;
         padding-left: 0;
         margin: 0;
     }
-    
+
     header {
         height: 50px;
         width: 100%;
@@ -29,7 +29,7 @@
         display: flex;
         clear: both;
     }
-    
+
     .btnMore,
     .btnReturn {
         position: relative;
@@ -40,64 +40,29 @@
         display: inline-block;
         padding: 10px 0;
     }
-    
+
     header > a > span > img {
         width: 30px;
         margin: 8px 0 8px;
     }
-    
+
     header > a {
         width: 50px;
         cursor: pointer;
     }
-    
-    .btnEdit {
-        position: fixed;
-        bottom: 100px;
-        cursor: pointer;
-        right: 36px;
-        border: none;
-        box-shadow: 2px 2px 18px #949494;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        width: 60px;
-        height: 60px;
-        background-color: #2196F3;
-        display: inline-block;
-        border-radius: 30px;
-        line-height: 70px;
-        text-align: center;
-        background: url('/img/sprite.svg') no-repeat;
-        background-position: -271px 15px;
-        background-color: #2196F3;
-        transition: all .4s ease-out;
-        outline: none;
-    }
-    
-    .btnEditHide {
-        bottom: -70px;
-    }
-    
-    .btnEditShow {
-        bottom: 38px;
-    }
-    
+
     #userPost {
         margin: 50px auto 0;
     }
-    
-    .btnEdit > img {
-        width: 43px;
-        padding-top: 9px;
-    }
-    
+
+
+
     .subform,
     .subform > label,
     .textarea {
         margin: 0;
     }
-    
+
     #editContent {
         padding: 0;
         width: 100%;
@@ -109,7 +74,7 @@
         outline: none;
         border: none;
     }
-    
+
     .subform > label > textarea {
         width: 100%;
         height: 33px;
@@ -123,26 +88,26 @@
         margin-top: 4px;
         padding: 0;
     }
-    
+
     .editList > li {
         padding: 8px 12px 0;
     }
-    
+
     .editList > li:first-child {
         padding-top: 8px;
         padding-bottom: 0;
     }
-    
-    #more {
+
+    #btnMore {
         position: absolute;
         right: 0;
     }
-    
+
     .btnReturn > img {
         transition: all 1.2s;
         /*opacity:1;*/
     }
-    
+
     .toggleToSave {
         opacity: 0;
         -webkit-transform: rotate(120deg);
@@ -151,7 +116,7 @@
         -o-transform: rotate(120deg);
         transform: rotate(120deg);
     }
-    
+
     .togglewarp {
         width: 38px;
         height: 18px;
@@ -161,27 +126,26 @@
         /* align-items: center; */
         padding: 6px;
     }
-    
+
     .btnToggle {
         width: 14px;
         height: 3px;
         display: inline-block;
         margin: 1px;
-        /* z-index: 4; */
         background-color: #fff;
     }
-    
+
     .Toggle1 {
         transform: rotate(-45deg);
         z-index: 4;
         transition: all 0.8s;
     }
-    
+
     .ToggleAfter1 {
         transform: rotate(0deg);
         opacity: 0;
     }
-    
+
     .Toggle2 {
         width: 20px;
         position: relative;
@@ -189,16 +153,16 @@
         left: 4px;
         transition: all 0.8s;
     }
-    
+
     .ToggleAfter2 {
         transform: rotate(-45deg);
     }
-    
+
     .Toggle3 {
         transform: rotate(45deg);
         transition: all 0.8s;
     }
-    
+
     .ToggleAfter3 {
         transform: rotate(225deg);
         width: 11px;
@@ -206,7 +170,7 @@
         top: -1px;
         position: relative;
     }
-    
+
     #btnSave {
         z-index: -1;
         position: absolute;
@@ -215,7 +179,7 @@
         height: 50px;
         background: transparent;
     }
-    
+
     .btnMore > span {
         width: 6px;
         background-color: #fff;
@@ -224,25 +188,52 @@
         display: block;
         margin: 2px 0 0 10px;
     }
+
+    .btnMenu {
+        width: 170px;
+        display: inline-block;
+        position: absolute;
+        right: 3px;
+        top: 3px;
+        background-color: #fff;
+        border-radius: 3px;
+        box-shadow: -3px 1px 27px #cdcdcd;
+        transition: all 0.3s;
+    }
+
+    .btnMenu > a {
+        display: inherit;
+        padding: 0 12px;
+        color: #282828;
+        text-decoration: none;
+    }
+
+    .btnMenuHide {
+        right: -180px;
+        top: -155px
+    }
 </style>
 {% endblock %} {% block content %}
 <header>
-    <a href="#" id="btnBack" action="back">
-        <!--{#<span class="btnMore"><img src="/img/return.png" alt="返回"></span>#}-->
+    <div href="#" id="btnBack" action="back">
         <span class="togglewarp ">
             <span class="btnToggle Toggle1"></span>
         <span class="btnToggle Toggle2"></span>
         <span class="btnToggle Toggle3"></span>
         </span>
-    </a>
-    <!--<a href="#" id="btnSave"><span></span></a>-->
-    <a href="#" id="more">
+    </div>
+    <div id="btnMore">
         <span class="btnMore">
-        <span></span>
-        <span></span>
-        <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </span>
-    </a>
+        <span class="btnMenu btnMenuHide">
+            <a href="#" id="btnEdit">编辑</a>
+            <a href="#">分享</a>
+            <a href="#">更多</a>
+        </span>
+    </div>
 </header>
 <form action="/reminder/add" method="post" id="userPost">
     <section class="warp" id="formContent">
@@ -252,7 +243,7 @@
                     <label for="title">
                     <textarea name="title" id="title" required placeholder="标题"
                               disabled>{{ json.reminder.data.title }}</textarea>
-                </label></p>
+                    </label></p>
             </li>
             <li>
                 <p class="textarea">
@@ -262,7 +253,6 @@
         </ul>
         <input type="hidden" name="shortid" id="shortid" value="{{ json.reminder.shortid }}">
     </section>
-    <a class="btnEdit" id="btnEdit"></a>
 </form>
 <script type="text/javascript">
     (function (doc, win) {
@@ -272,7 +262,10 @@
                 title = doc.getElementById('title'),
                 editContent = doc.getElementById('editContent'),
                 shortid = doc.getElementById('shortid'),
-                userPost = doc.getElementById('userPost');
+                userPost = doc.getElementById('userPost'),
+                btnMore = document.getElementById("btnMore"),
+                btnBack = document.getElementById("btnBack"),
+                btnMenu = document.getElementsByClassName('btnMenu')[0];
 
         function onEdit() {
             //返回键修改
@@ -282,8 +275,8 @@
             //隐藏编辑按键
             title.disabled = false;
             editContent.disabled = false;
-            btnBack.setAttribute('action','save');
-            btnEdit.className = "btnEdit btnEditHide";
+            btnMenu.className = 'btnMenu btnMenuHide';
+            btnBack.setAttribute('action', 'save');
             setTimeout(function () {
                 if (title.value.length > 0) {
                     editContent.focus();
@@ -336,7 +329,7 @@
             title.value = title.value.trim();
             if (title.value.length == 0)title.value = defaultTitle();
             if (editContent.value.length == 0) {
-                confirm('想记的事情为空，是否放弃编辑？')&&onBack();
+                confirm('想记的事情为空，是否放弃编辑？') && onBack();
                 return false;
             }
             //显示编辑按键
@@ -345,8 +338,7 @@
             }
             title.disabled = true;
             editContent.disabled = true;
-            btnBack.setAttribute('action','back');
-            btnEdit.className = "btnEdit btnEditShow";
+            btnBack.setAttribute('action', 'back');
             //发送ajax请求
             postEdit();
         }
@@ -356,23 +348,34 @@
         }
 
         btnEdit.addEventListener('click', onEdit);
-        btnBack.addEventListener('click', function(){
-            if(btnBack.getAttribute('action')=='save'){
+        btnBack.addEventListener('click', function () {
+            if (btnBack.getAttribute('action') == 'save') {
                 onSave();
-            }else{
+            } else {
                 onBack();
             }
         });
         userPost.onsubmit = function () {
             return postEdit() ? false : true
         };
+
+
+        btnMore.addEventListener('click',function () {
+            btnMenu.className = 'btnMenu';
+            userPost.addEventListener('click', function () {
+                btnMenu.className = 'btnMenu btnMenuHide';
+                userPost.removeEventListener('click',null);
+            })
+        },true);
+
+
         var titleHeight = title.style.height;
         titleHeight = titleHeight == '' ? 37 : parseInt(titleHeight);
         title.placeholder = "标题(" + defaultTitle() + ")";
         editContent.style.height = parseInt(doc.body.clientHeight) - titleHeight - 88;
         {% if json.reminder %}
         {% else %}
-            onEdit()
+        onEdit()
         {%  endif %}
     })(document);
 </script> {% endblock %}

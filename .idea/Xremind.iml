@@ -8,13 +8,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Xremind node_modules" level="project" />
     <orderEntry type="library" name="nunjucks-date-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="nunjucks-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="angularjs-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="express-DefinitelyTyped" level="application" />
-    <orderEntry type="library" name="Xremind node_modules" level="project" />
-    <orderEntry type="library" name="Xremind node_modules" level="project" />
     <orderEntry type="library" name="redis-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="redis" level="project" />
   </component>
