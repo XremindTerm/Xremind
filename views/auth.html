@@ -160,6 +160,7 @@
 	<input class="auth-name" type="text" name="nickname" placeholder="用户名" required maxlength="16" autocomplete="off" value="{{ form.nickname }}">
 	<span class="auth-name-edit"></span><!--注意auth-name-edit一定要放在auth-name后面-->
 	<input class="auth-pwd" type="password" name="password" placeholder="密码" required maxlength="20" autocomplete="off">
+	<input type="hidden" name="clientId" value="">
 	<input class="auth-pwd-submit" type="submit" value="{{ form.submit }}">
 	<div class="err">{{ json.detail }}</div>
 </form>
@@ -169,6 +170,7 @@
 	var form=document.forms[0],
 			user=document.getElementsByName('nickname')[0],
 			pwd	=document.getElementsByName('password')[0],
+			cid =document.getElementsByName('clientId')[0],
 			img =document.getElementsByClassName('auth-img')[0],
 			edit=document.getElementsByClassName('auth-name-edit')[0];
 
@@ -204,5 +206,13 @@
 		user.focus();
 	},1000);
 	{% endif %}
+
+	/**
+	 * 获取个推CID
+	 */
+	document.addEventListener( "plusready", function(){
+		var cinfo=plus.push.getClientInfo();
+		cid.value = cinfo.clientid||cinfo.token;
+	}, false );
 </script>
 </html>

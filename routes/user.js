@@ -60,6 +60,19 @@ router.route('/login')
                     }else{
                         if(vals[0]&&vals[0].img)out._opt.form.img=vals[0].img;
                         if(vals[0]&&vals[0].password==md5(req.body.password)){
+                            //更新个推clientId
+                            var cid = req.body.clientId;
+                            if(cid && cid.length > 0 && cid != vals[0].clientId){
+                                query('update users set ? where id = ? limit 1'
+                                    ,[
+                                        {clientId:cid},
+                                        vals[0].id
+                                    ]
+                                    ,function(err){
+                                        out.echo({state:'err',detail:err});
+                                    });
+                            }
+                            //激活用户在线状态
                             vals[0].password="*";
                             req.session.userinfo=vals[0];
                             res.cookie('nickname', vals[0].nickname, { maxAge: 604800000, httpOnly: true })
