@@ -1,7 +1,7 @@
 
 var express = require('express');
 var router = express.Router();
-var query=require('dao/dbPool');
+var query=require('../util/dbPool');
 var md5=require('md5');
 var Out=require('./out');
 

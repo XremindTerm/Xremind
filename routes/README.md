@@ -21,3 +21,19 @@ password|用户密码，长度不能少于4
 :------:|-------------
 get		|redirect('login')
 post	|redirect('login')
+
+## 任务模块
+
+显示任务    |/reminder/list/:nav
+:------:|-------------
+action  |今日任务
+wait    |待完成任务
+done    |已完成任务
+
+任务操作    |/reminder/:shortid/:opt
+:------:|-------------
+detail  |查看指定任务细节
+delete  |删除指定任务
+done    |结束指定任务
+remember|完成指定任务（当天）
+enhance |需加强指定任务（当天）

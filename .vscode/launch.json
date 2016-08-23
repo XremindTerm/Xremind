@@ -2,11 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-<<<<<<< HEAD
-            "name": "Launch",
-=======
             "name": "启动",
->>>>>>> dev_sfsm
             "type": "node",
             "request": "launch",
             "program": "${workspaceRoot}/bin/www",
@@ -26,11 +22,7 @@
             "outDir": null
         },
         {
-<<<<<<< HEAD
-            "name": "Attach",
-=======
             "name": "附加",
->>>>>>> dev_sfsm
             "type": "node",
             "request": "attach",
             "port": 5858,

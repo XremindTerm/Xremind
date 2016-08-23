@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var query = require('dao/dbPool');
+var query = require('../util/dbPool');
 var Out = require('./out');
 var shortid = require('shortid');
-var socket = require('dao/push');
+var socket = require('../util/push');
 
 var echoKeys = ['shortid', 'data', 'target', 'create', 'state'];
 
@@ -91,6 +91,25 @@ router.all('/list/:nav', function (req, res, next) {
 router.all('/:shortid/:opt', function (req, res, next) {
     var out = Out(req, res, 'edit');
     switch (req.params.opt) {
+        case 'detail':
+            query('select ?? from reminders where uid = ? and shortid = ? limit 1'
+                , [echoKeys, req.session.userinfo.id, req.params.shortid]
+                , function (err, vals) {
+                    if (err) {
+                        out.echo({ state: 'err', detail: err });
+                    } else {
+                        if (vals[0]) {
+                            try {
+                                vals[0].data = JSON.parse(vals[0].data);
+                            } catch (e) {
+                            }
+                            out.echo({ state: 'ok', detail: 'get reminder success', reminder: vals[0] });
+                        } else {
+                            out.echo({ state: 'err', detail: 'cannot find the reminder' });
+                        }
+                    }
+                });
+            break;
         case 'delete':
             query('delete from reminders where uid = ?  and shortid= ? limit 1'
                 , [req.session.userinfo.id, req.params.shortid]
@@ -153,30 +172,13 @@ router.all('/:shortid/:opt', function (req, res, next) {
                 });
             break;
         default:
-            res.redirect('/reminder/' + req.params.shortid);
+            res.redirect('/reminder/' + req.params.shortid + '/detail');
             break;
     }
 });
 
 router.all('/:shortid', function (req, res, next) {
-    var out = Out(req, res, 'edit');
-    query('select ?? from reminders where uid = ? and shortid = ? limit 1'
-        , [echoKeys, req.session.userinfo.id, req.params.shortid]
-        , function (err, vals) {
-            if (err) {
-                out.echo({ state: 'err', detail: err });
-            } else {
-                if (vals[0]) {
-                    try {
-                        vals[0].data = JSON.parse(vals[0].data);
-                    } catch (e) {
-                    }
-                    out.echo({ state: 'ok', detail: 'get reminder success', reminder: vals[0] });
-                } else {
-                    out.echo({ state: 'err', detail: 'cannot find the reminder' });
-                }
-            }
-        });
+    res.redirect('/reminder/' + req.params.shortid + '/detail');
 });
 
 var RPID = setInterval(function () {
