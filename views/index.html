@@ -48,6 +48,14 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
         padding-left: 0
     }
 
+
+    .headerShow {
+        top: 0
+    }
+    .tasklist {
+        padding-left: 0
+    }
+
     .tasklist > li {
         list-style: none;
         background-color: #fff;
@@ -68,8 +76,6 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
         margin: 0 auto;
         background: url('/img/sprite.svg') no-repeat;
         background-color: #5fb8ff;
-        background-position: -421px 7px;
-    }
 
     .searchicon {
         position: absolute;
@@ -93,6 +99,18 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
         color: #fff !important;
     }
 
+    input::-webkit-input-placeholder {
+        color: #fff !important;
+    }
+    input:-moz-placeholder {
+        color: #fff !important;
+    }
+    input::-moz-placeholder {
+        color: #fff !important;
+    }
+    input:-ms-input-placeholder {
+        color: #fff !important;
+    }
     .task_header {
         font-size: 23px;
         margin: 12px 0 12px;
@@ -199,6 +217,7 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
         bottom: 0;
     }
 
+
     .colorfulEags {
         text-align: center;
         width: 100%;
@@ -241,6 +260,12 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
         bottom: 100px;
     }
 
+    .btnEditHide {
+        bottom: -70px;
+    }
+    .btnEditShow {
+        bottom: 100px;
+    }
     .mask {
         position: absolute;
         top: 50px;
@@ -319,6 +344,12 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
         //建立socket连接
         var socket = io;
 
+        btnEdit.addEventListener('click', function () {
+            location.href = '/reminder/add';
+        });
+        //socket
+        //建立socket连接
+        var socket = io;
         //监听回传事件
         socket.on('chatBack', function (msg) {
             addList(msg.shortid, msg.title, msg.comtent)
@@ -343,7 +374,9 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
             liTask.appendChild(aTask);
             tasklist.appendChild(liTask);
         }
-
+            liTask.appendChild(aTask);
+            tasklist.appendChild(liTask);
+        }
         //导航栏显示
         function tipShow() {
             footer.className = 'footerShow';
@@ -452,6 +485,57 @@ Xremind--WORKING SMART.REMEMBER DEEPLY
             }
         }
 
+        }
+        //touchmove事件，这个事件无法获取坐标
+        function touchMoveFunc(evt) {
+            try {
+                //evt.preventDefault(); //阻止触摸时浏览器的缩放、滚动条滚动等
+                var touch = evt.touches[0]; //获取第一个触点
+                var x = Number(touch.pageX); //页面触点X坐标
+                var y = Number(touch.pageY); //页面触点Y坐标
+                if (y - startY > 0) {
+                    //向下滑
+                    tipShow();
+                } else {
+                    //向上滑
+                    tipHide();
+                }
+            }
+            catch (e) {
+                alert('touchMoveFunc：' + e.message);
+            }
+        }
+        //绑定事件
+        function bindEvent() {
+            doc.addEventListener('touchstart', touchSatrtFunc, false);
+            doc.addEventListener('touchmove', touchMoveFunc, false);
+        }
+        //判断是否支持触摸事件
+        function isTouchDevice() {
+            try {
+                doc.createEvent("TouchEvent");
+                bindEvent(); //绑定事件
+                win.onmousewheel = doc.onmousewheel = scrollFunc;//同时绑定鼠标滚轮事件
+            }
+            catch (e) {
+                //不支持TouchEvent事件！
+                if (doc.addEventListener) {
+                    doc.addEventListener('DOMMouseScroll', scrollFunc, false);
+                }
+                win.onmousewheel = doc.onmousewheel = scrollFunc;
+            }
+        }
+        //页面载入事件，可多次调用
+        function addLoadEvent(func) {
+            var oldonload = win.onload;
+            if (typeof win.onload != 'function') {
+                win.onload = func;
+            } else {
+                win.onload = function () {
+                    oldonload();
+                }
+            }
+        }
         //建立载入事件
         addLoadEvent(isTouchDevice);
     }(document, window, io()));

@@ -50,7 +50,7 @@
         width: 50px;
         cursor: pointer;
     }
-
+    
     #userPost {
         margin: 50px auto 0;
     }
@@ -186,7 +186,6 @@
         display: block;
         margin: 2px 0 0 10px;
     }
-
     .btnMenu {
         width: 170px;
         display: inline-block;
@@ -233,6 +232,22 @@
                 <a href="#" title="remember">记住了</a>
                 <a href="#" title="enhance">没记住</a>
                 <a href="#" title="done">完成</a>
+                <a href="#" title="detail">任务详情</a>
+            {% endif %}
+            <a href="#" title="edit">编辑</a>
+            <a href="#" title="delete">删除</a>
+        </span>
+        <span></span>
+        <span></span>
+        </span>
+        <span class="btnMenu btnMenuHide" id="optFun">
+            <!--TODO-->
+            <!--后台返回一个nav地址变量,我能判断是否是新建任务，然后觉得是否要隐藏这些功能-->
+            {% if nav!="add"%}
+                <a href="#" title="remember">记住了</a>
+                <a href="#" title="enhance">没记住</a>
+                <a href="#" title="done">完成</a>
+                <a href="#" title="detail">任务详情</a>
             {% endif %}
             <a href="#" title="edit">编辑</a>
             <a href="#" title="delete">删除</a>
@@ -270,7 +285,6 @@
                 btnBack = doc.getElementById("btnBack"),
                 optFun = doc.getElementById("optFun"),
                 btnMenu = doc.getElementsByClassName('btnMenu')[0];
-
 
         function onEdit() {
             //返回键修改
@@ -338,6 +352,36 @@
             location.href = '/reminder/list/action';
         }
 
+        function onDisplyDetail() {
+            var seriseUrl = '/reminder/' + shortid.value + '/detail';
+            xhr(null, 'get', seriseUrl, function (err, result) {
+                if (err) {
+                    return true;
+                } else {
+                    if (result.state && result.state == 'ok') {
+                        //TODO 待测试
+                        //获取成功后，绘制详情页面
+                        var ulList = document.createElement('ul');
+                        ulList.className = 'taskDetail';
+                        for (var key in result.reminder) {
+                            var liList = doc.createElement('li');
+                            liList.innerHTML = key + ":" + result.reminder[key];
+                            ulList.appendChild(liList);
+                        }
+                        doc.body.appendChild(ulList);
+                        var ulListLinsten = doc.getElementsByClassName('taskDetail')[0];
+                        ulListLinsten.addEventListener('click', function () {
+                            ulListLinsten.removeEventListener('click', null);
+                            ulListLinsten.remove();
+                        })
+                    } else {
+                        alert('Oops,some error was happened...');
+                    }
+                }
+            })
+        }
+
+
         btnBack.addEventListener('click', function () {
             if (btnBack.getAttribute('action') == 'save') {
                 onSave();
@@ -345,6 +389,7 @@
                 onBack();
             }
         });
+
 
         userPost.onsubmit = function () {
             return postEdit() ? false : true
@@ -366,12 +411,17 @@
                 if (optTitle && (optTitle == 'edit')) {
                     //绑定编辑事件
                     onEdit();
+
+                } else if (optTitle && (optTitle == 'detail')) {
+                    //绑定展示详情
+                    onDisplyDetail();
                 } else if (optTitle) {
                     //绑定菜单点击事件
                     onOpt(optTitle);
                 }
             })
         }
+
 
         //菜单栏事件触发器
         function onOpt(opt) {
@@ -404,7 +454,6 @@
                 })
             }
             btnMenu.className = 'btnMenu btnMenuHide';
-
         }
 
         //xhr发送请求

@@ -8,10 +8,8 @@ module.exports.socket = function (io) {
         if (socket.handshake.session.userinfo.nickname) {
             var nickname = socket.handshake.session.userinfo.nickname || '';
         }
-        if (!userList.hasOwnProperty(nickname)) {
-            userList[nickname] = socket;
-        }
-
+        //强制更新
+        userList[nickname] = socket;
         socket.on('disconnect', function (msg) {
             console.info('Client gone (id=' + socket.id + ').');
             delete userList[nickname];

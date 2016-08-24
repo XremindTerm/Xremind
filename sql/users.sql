@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-07-29 14:30:02
+-- Generation Time: 2016-08-23 09:43:05
 -- 服务器版本： 5.7.11
 -- PHP Version: 5.6.19
 
@@ -31,7 +31,8 @@ CREATE TABLE `users` (
   `usermail` varchar(30) NOT NULL COMMENT '用户邮箱',
   `nickname` varchar(20) NOT NULL COMMENT '用户昵称',
   `password` varchar(35) NOT NULL COMMENT '用户密码',
-  `img` varchar(30) NOT NULL DEFAULT '/img/default.png' COMMENT '用户头像图片'
+  `img` varchar(30) NOT NULL DEFAULT '/img/default.png' COMMENT '用户头像图片',
+  `clientId` varchar(40) NOT NULL COMMENT '个推CID'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 --

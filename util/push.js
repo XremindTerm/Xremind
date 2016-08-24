@@ -10,7 +10,7 @@ module.exports.push = function (users, callback) {
     var badUser=users;
     var sendflag = false;
     //获取在线的全部用户
-    var userAllList = require('../dao/socket').userlist;
+    var userAllList = require('./socket').userlist;
     var query = require('./dbPool');
 
     //取出用户任务详情
