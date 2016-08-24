@@ -4,16 +4,13 @@ module.exports.socket = function (io) {
     var router = app.Router();
     io.on('connection', function (socket) {
         console.log("New client is connected(id =" + socket.id + ")");
-        var nickname = '';
+        //使用sock.io.handshake.获取session
+        if (socket.handshake.session.userinfo.nickname) {
+            var nickname = socket.handshake.session.userinfo.nickname || '';
+        }
 
-        socket.on('init', function (msg) {
-            nickname = msg.nickname.toString();
-            if (!userList.hasOwnProperty(nickname)) {
-                userList[nickname] = socket;
-            }
-        });
-
-
+        //强制更新
+        userList[nickname] = socket;
         socket.on('disconnect', function (msg) {
             console.info('Client gone (id=' + socket.id + ').');
             delete userList[nickname];

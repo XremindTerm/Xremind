@@ -5,7 +5,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var expressSession = require('express-session');
+var sharedsession = require("express-socket.io-session");
 
 var routes = require('./routes/index');
 var user = require('./routes/user');
@@ -22,7 +23,8 @@ app.set('views', path.join(__dirname, 'views'));
 // development error handler
 
 // will print stacktrace
-app.io = require('socket.io')();
+var io = require('socket.io');
+app.io = io();
 
 app.set('view engine', 'html');
 
@@ -35,13 +37,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-app.use(session({
+var session = expressSession({
     secret: 'Xremind',
     name: 'xid',
     cookie: {maxAge: 600000},//设置session十分钟后过期
     resave: false,
     saveUninitialized: true
+});
+
+app.io.use(sharedsession(session, {
+    autosave: true
 }));
+app.use(session);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
@@ -62,7 +69,7 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        console.log(err.stack||err);
+        console.log(err.stack || err);
         res.render('error', {
             statusCode: res.statusCode,
             message: err.message,
@@ -76,7 +83,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    console.log(err.stack||err);
+    console.log(err.stack || err);
     res.render('error', {
         statusCode: res.statusCode,
         message: err.message,
@@ -84,4 +91,3 @@ app.use(function (err, req, res, next) {
     });
 });
 module.exports = app;
-
