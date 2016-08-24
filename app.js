@@ -5,7 +5,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var expressSession = require('express-session');
 var sharedsession = require("express-socket.io-session");
 
 var routes = require('./routes/index');
@@ -37,20 +37,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-var session = session({
+var session = expressSession({
     secret: 'Xremind',
     name: 'xid',
     cookie: {maxAge: 600000},//设置session十分钟后过期
     resave: false,
     saveUninitialized: true
 });
-// app.use(session({
-//     secret: 'Xremind',
-//     name: 'xid',
-//     cookie: {maxAge: 600000},//设置session十分钟后过期
-//     resave: false,
-//     saveUninitialized: true
-// }));
 
 app.io.use(sharedsession(session, {
     autosave: true

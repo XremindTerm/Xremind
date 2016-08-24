@@ -55,8 +55,6 @@
         margin: 50px auto 0;
     }
 
-
-
     .subform,
     .subform > label,
     .textarea {
@@ -228,10 +226,16 @@
             <span></span>
             <span></span>
         </span>
-        <span class="btnMenu btnMenuHide">
-            <a href="#" id="btnEdit">编辑</a>
-            <a href="#">分享</a>
-            <a href="#">更多</a>
+        <span class="btnMenu btnMenuHide" id="optFun">
+            <!--TODO-->
+            <!--后台返回一个nav地址变量,我能判断是否是新建任务，然后觉得是否要隐藏这些功能-->
+            {% if nav!="add"%}
+                <a href="#" title="remember">记住了</a>
+                <a href="#" title="enhance">没记住</a>
+                <a href="#" title="done">完成</a>
+            {% endif %}
+            <a href="#" title="edit">编辑</a>
+            <a href="#" title="delete">删除</a>
         </span>
     </div>
 </header>
@@ -255,17 +259,18 @@
     </section>
 </form>
 <script type="text/javascript">
-    (function (doc, win) {
-        var btnEdit = doc.getElementById('btnEdit'),
-                btnSave = doc.getElementById('btnSave'),
+    (function (doc) {
+        var btnSave = doc.getElementById('btnSave'),
                 togglewarp = doc.getElementsByClassName('togglewarp')[0].getElementsByTagName('span'),
                 title = doc.getElementById('title'),
                 editContent = doc.getElementById('editContent'),
                 shortid = doc.getElementById('shortid'),
                 userPost = doc.getElementById('userPost'),
-                btnMore = document.getElementById("btnMore"),
-                btnBack = document.getElementById("btnBack"),
-                btnMenu = document.getElementsByClassName('btnMenu')[0];
+                btnMore = doc.getElementById("btnMore"),
+                btnBack = doc.getElementById("btnBack"),
+                optFun = doc.getElementById("optFun"),
+                btnMenu = doc.getElementsByClassName('btnMenu')[0];
+
 
         function onEdit() {
             //返回键修改
@@ -286,6 +291,7 @@
             }, 500);
         }
 
+        //默认标题
         function defaultTitle() {
             var nD = new Date();
             var m = nD.getMonth() + 1;
@@ -304,25 +310,7 @@
             return "shortid=" + shortid.value + "&data=" + encodeURIComponent(JSON.stringify(data));
         }
 
-        function postEdit() {
-            //Get request
-            var request = new XMLHttpRequest();
-            if (request) {
-                request.open('POST', '/reminder/add', true);
-                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                request.onreadystatechange = function () {
-                    if (request.readyState == 4 && request.status == 200) {
-                        //
-                    }
-                };
-                request.send(complieDate());
-                return true;
-            } else {
-                alert('Sorry,your browser doesn\'t support XMLHttpRequeset');
-                return false;
-            }
-        }
-
+        //保存更改
         function onSave() {
             //检查数据
             editContent.value = editContent.value.trim();
@@ -340,14 +328,16 @@
             editContent.disabled = true;
             btnBack.setAttribute('action', 'back');
             //发送ajax请求
-            postEdit();
+            xhr(complieDate(), 'post', '/reminder/add', function (err, result) {
+                //callback fun
+            });
         }
 
+        //返回主页
         function onBack() {
             location.href = '/reminder/list/action';
         }
 
-        btnEdit.addEventListener('click', onEdit);
         btnBack.addEventListener('click', function () {
             if (btnBack.getAttribute('action') == 'save') {
                 onSave();
@@ -355,20 +345,94 @@
                 onBack();
             }
         });
+
         userPost.onsubmit = function () {
             return postEdit() ? false : true
         };
 
-
-        btnMore.addEventListener('click',function () {
+        //菜单栏详情展开
+        btnMore.addEventListener('click', function () {
             btnMenu.className = 'btnMenu';
             userPost.addEventListener('click', function () {
                 btnMenu.className = 'btnMenu btnMenuHide';
-                userPost.removeEventListener('click',null);
+                userPost.removeEventListener('click', null);
             })
-        },true);
+        }, true);
 
+        //绑定菜单栏里的事件
+        for (var t = 0; t < optFun.children.length; t++) {
+            optFun.children[t].addEventListener('click', function () {
+                var optTitle = this.title || false;
+                if (optTitle && (optTitle == 'edit')) {
+                    //绑定编辑事件
+                    onEdit();
+                } else if (optTitle) {
+                    //绑定菜单点击事件
+                    onOpt(optTitle);
+                }
+            })
+        }
 
+        //菜单栏事件触发器
+        function onOpt(opt) {
+            var confTitle;
+            switch (opt) {
+                case 'delete':
+                    confTitle = '确认删除该事件提醒？';
+                    break;
+                case 'done':
+                    confTitle = '完成记忆了？';
+                    break;
+                case 'remember':
+                    confTitle = '已经记住啦？';
+                    break;
+                case 'enhance':
+                    confTitle = '还没记住?';
+                    break;
+                default:
+                    confTitle = false;
+                    break;
+            }
+
+            //提示信息和响应操作
+            if (confTitle && confirm(confTitle)) {
+                var optUrl = '/reminder/' + shortid.value + '/' + opt;
+                xhr(null, 'get', optUrl, function (err, result) {
+                    //todo
+                    //页面跳转有问题，后台跳转不了
+                    //可以用回调事件完成跳转
+                })
+            }
+            btnMenu.className = 'btnMenu btnMenuHide';
+
+        }
+
+        //xhr发送请求
+        function xhr(data, method, url, callback) {
+            var xhr = new XMLHttpRequest();
+            if (xhr) {
+                xhr.open(method, url, true);
+                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                //XML请求，后台可以通过req.xhr==true来判断请求类型是否为xhr
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var responseData = xhr.responseText || false;
+                        callback(false, JSON.parse(responseData));
+                    } else {
+                        callback(true);
+                    }
+                };
+                xhr.send(data);
+                return true;
+            } else {
+                alert('Sorry,your browser doesn\'t support XMLHttpRequeset');
+                return false;
+            }
+        }
+
+        //调整页面以适应屏幕尺寸
+        //设置默认标题
         var titleHeight = title.style.height;
         titleHeight = titleHeight == '' ? 37 : parseInt(titleHeight);
         title.placeholder = "标题(" + defaultTitle() + ")";

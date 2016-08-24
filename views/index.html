@@ -1,5 +1,8 @@
-{% extends "layout.html" %} {% block title %}Xremind--WORKING SMART.REMEMBER DEEPLY{% endblock %} {% block head %}
-
+{% extends "layout.html" %}
+{% block title %}
+Xremind--WORKING SMART.REMEMBER DEEPLY
+{% endblock %}
+{% block head %}
 <style type="text/css">
     html,
     body {
@@ -251,7 +254,9 @@
     }
 </style>
 
-<script type="text/javascript" src="/js/socket.io.js"></script> {% endblock %} {% block content %}
+<script type="text/javascript" src="/js/socket.io.js"></script>
+{% endblock %}
+{% block content %}
 <header><input type="search" id="searchBar" placeholder="搜索">
 </header>
 <section style="margin-top: 60px;">
@@ -306,10 +311,15 @@
             mask.style.visibility = 'hidden';
         });
 
+        btnEdit.addEventListener('click', function () {
+            location.href = '/reminder/add';
+        });
+
+        //socket
         //建立socket连接
         var socket = io;
 
-        //监听事件
+        //监听回传事件
         socket.on('chatBack', function (msg) {
             addList(msg.shortid, msg.title, msg.comtent)
         });
@@ -361,7 +371,7 @@
                 direct = e.detail < 0 ? 1 : -1;
             }
             isShow(direct);
-        }
+        };
 
         function isShow(direct) {
             if (direct == 1) {
@@ -438,7 +448,6 @@
             } else {
                 win.onload = function () {
                     oldonload();
-                    c();
                 }
             }
         }
@@ -446,4 +455,5 @@
         //建立载入事件
         addLoadEvent(isTouchDevice);
     }(document, window, io()));
-</script> {% endblock %}
+</script>
+{% endblock %}
