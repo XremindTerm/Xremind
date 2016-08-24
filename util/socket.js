@@ -5,8 +5,9 @@ module.exports.socket = function (io) {
     io.on('connection', function (socket) {
         console.log("New client is connected(id =" + socket.id + ")");
         //使用sock.io.handshake.获取session
-        if (socket.handshake.session.userinfo.nickname) {
-            var nickname = socket.handshake.session.userinfo.nickname || '';
+        var nickname = '';
+        if (socket.handshake.session.userinfo) {
+            var nickname = socket.handshake.session.userinfo.nickname;
         }
         //强制更新
         userList[nickname] = socket;
