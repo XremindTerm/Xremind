@@ -5,7 +5,8 @@ function Out(req,res,defaultView,defaultViewOpt){
         _view:defaultView,
         _opt:defaultViewOpt||{},//渲染所需的默认参数，参数可被echo中的obj中覆盖
         echo:function(obj,view){
-            if(this._req.is('json')){
+            //通过req.xhr判断请求是否为xhr
+            if(this._req.xhr){
                 this._res.jsonp(obj);
             }else{
                 this._opt.json=obj;
