@@ -134,7 +134,7 @@ router.all('/:shortid/:opt', function (req, res, next) {
                 });
             break;
         case 'remember':
-            query('update reports set state = "remember" where uid = ?  and rid= ? limit 1'
+            query('update reports set state = "remember" where uid = ?  and rshortid= ? limit 1'
                 , [req.session.userinfo.id, req.params.shortid]
                 , function (err) {
                     if (err) {
@@ -153,7 +153,7 @@ router.all('/:shortid/:opt', function (req, res, next) {
                 });
             break;
         case 'enhance':
-            query('update reports set state = "enhance" where uid = ?  and rid= ? limit 1'
+            query('update reports set state = "enhance" where uid = ?  and rshortid= ? limit 1'
                 , [req.session.userinfo.id, req.params.shortid]
                 , function (err) {
                     if (err) {
@@ -222,7 +222,7 @@ var RPID = setInterval(function () {
     console.log('初始化新任务的报告');
     var vaildCondition = " where `target`<=" + nT + " and `state`='wait'";
     //选出已经生效的提醒，创建对应的报告
-    query("insert into reports (`rid`,`rid`,`uid`,`fulfill`)"
+    query("insert into reports (`rid`,`rshortid`,`uid`,`fulfill`)"
         + " select `id`,`shortid`,`uid`,'" + nT + "' from reminders" + vaildCondition
         , function (err) {
             if (err) {
