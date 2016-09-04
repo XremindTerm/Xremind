@@ -140,7 +140,7 @@ router.all('/:shortid/:opt', function (req, res, next) {
                     if (err) {
                         out.echo({ state: 'err', detail: err });
                     } else {
-                        query('update reminders set state = "wait",`target`=`target`+`interval` where uid = ? and shortid = ? limit 1'
+                        query('update reminders set state = "wait",`target`=`target`+`interval`,`interval`=(`interval`/86400000+1)*86400000 where uid = ? and shortid = ? limit 1'
                             , [req.session.userinfo.id, req.params.shortid]
                             , function (err) {
                                 if (err) {
@@ -159,7 +159,7 @@ router.all('/:shortid/:opt', function (req, res, next) {
                     if (err) {
                         out.echo({ state: 'err', detail: err });
                     } else {
-                        query('update reminders set state = "wait",`target`=`target`+`interval` where uid = ? and shortid = ? limit 1'
+                        query('update reminders set state = "wait",`target`=`target`+`interval`,`interval`=86400000 where uid = ? and shortid = ? limit 1'
                             , [req.session.userinfo.id, req.params.shortid]
                             , function (err) {
                                 if (err) {
