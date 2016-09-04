@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2016-08-01 14:37:55
--- 服务器版本： 5.7.11
+-- Generation Time: Sep 04, 2016 at 04:38 AM
+-- Server version: 5.7.11
 -- PHP Version: 5.6.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -23,12 +23,13 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- 表的结构 `reports`
+-- Table structure for table `reports`
 --
 
 CREATE TABLE `reports` (
   `id` int(11) NOT NULL,
   `rid` int(11) NOT NULL COMMENT '对应reminders的id',
+  `rshortid` varchar(15) NOT NULL COMMENT '任务短编号',
   `uid` int(11) NOT NULL COMMENT '对应users的id',
   `state` varchar(20) NOT NULL DEFAULT 'undone' COMMENT '执行情况',
   `fulfill` varchar(15) NOT NULL COMMENT '任务生效/完成时间'
@@ -45,11 +46,11 @@ ALTER TABLE `reports`
   ADD PRIMARY KEY (`id`);
 
 --
--- 在导出的表使用AUTO_INCREMENT
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- 使用表AUTO_INCREMENT `reports`
+-- AUTO_INCREMENT for table `reports`
 --
 ALTER TABLE `reports`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
